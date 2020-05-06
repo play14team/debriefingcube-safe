@@ -17,9 +17,22 @@ let deck : Deck = [ goal ; proc ; groupDynamics ; communication ; emotions ; tak
 
 [<Fact>]
 let ``Pick a Group Dynamics card`` () =
-    let result = deck |> pickCard (GroupDynamics)
-    let (card : Card, remaingDeck : Deck) = result
-    test <@ card.Lens = GroupDynamics @>
-    test <@ remaingDeck.Length = 5 @>
-    test <@ remaingDeck |> List.contains card = false @>
-    
+    let (c, d) = deck |> tryPickCard GroupDynamics
+
+    test <@ Option.isSome c @>
+    match c with
+    | Some card -> 
+        test <@ card.Lens = GroupDynamics @>
+        test <@ d.Length = 5 @>
+        test <@ d |> List.contains card |> not @>
+    | None -> 
+        raise <| Exception "Should not have been None"
+
+[<Fact>]
+let ``Pick 2 Group Dynamics card`` () =
+    let (card', deck') = deck |> tryPickCard GroupDynamics
+    let (card'', deck'') = deck' |> tryPickCard GroupDynamics
+
+    test <@ Option.isSome card' @>
+    test <@ Option.isNone card'' @>
+    test <@ deck' = deck'' @>
