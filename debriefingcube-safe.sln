@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Client", "src\Client\Client.fsproj", "{73E8E820-C8AA-47CC-BB2B-152CA4D0B855}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Server", "src\Server\Server.fsproj", "{73E8E820-C8AA-47CC-BB2B-152CA4D0B856}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{08CCFCF6-2248-43ED-A6EF-E972A2DA0E6A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{08CCFCF6-2248-43ED-A6EF-E972A2DA0E6A}"
 	ProjectSection(SolutionItems) = preProject
 		build.fsx = build.fsx
 		package.json = package.json
@@ -18,6 +18,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		yarn.lock = yarn.lock
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{71F1D4CF-437C-40D7-AD94-C5EE232EB9A1}"
+	ProjectSection(SolutionItems) = preProject
+		playground.fsx = playground.fsx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1F767D41-7562-4FF5-8150-966DBC957246}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnitTests", "src\UnitTests\UnitTests.fsproj", "{7E146553-3421-4D83-AF08-5E2233780957}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,18 +34,23 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{73E8E820-C8AA-47CC-BB2B-152CA4D0B855}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B855}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73E8E820-C8AA-47CC-BB2B-152CA4D0B855}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B856}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B856}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73E8E820-C8AA-47CC-BB2B-152CA4D0B856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E146553-3421-4D83-AF08-5E2233780957}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E146553-3421-4D83-AF08-5E2233780957}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E146553-3421-4D83-AF08-5E2233780957}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E146553-3421-4D83-AF08-5E2233780957}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{73E8E820-C8AA-47CC-BB2B-152CA4D0B855} = {1F767D41-7562-4FF5-8150-966DBC957246}
+		{73E8E820-C8AA-47CC-BB2B-152CA4D0B856} = {1F767D41-7562-4FF5-8150-966DBC957246}
+		{7E146553-3421-4D83-AF08-5E2233780957} = {71F1D4CF-437C-40D7-AD94-C5EE232EB9A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A0AA30E-4CD9-4359-9513-BA68E2E85245}
