@@ -8,25 +8,23 @@
         <None Include="index.html" />
         <None Include="paket.references" />
         <None Include="style.scss" />
+        <Content Include="public\communication-lens.png" />
+        <Content Include="public\communication.png" />
+        <Content Include="public\emotions-lens.png" />
+        <Content Include="public\emotions.png" />
+        <Content Include="public\favicon.png" />
+        <Content Include="public\goal-lens.png" />
+        <Content Include="public\goal.png" />
+        <Content Include="public\groupdynamics-lens.png" />
+        <Content Include="public\groupdynamics.png" />
+        <Content Include="public\process-lens.png" />
+        <Content Include="public\process.png" />
+        <Content Include="public\takeaway-lens.png" />
+        <Content Include="public\takeaway.png" />
         <Compile Include="..\Shared\Cube.fs" Link="Cube.fs" />
         <Compile Include="..\Shared\Shared.fs" />
         <Compile Include="Version.fs" />
         <Compile Include="Client.fs" />
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include="public\communication-lens.png" />
-      <Content Include="public\communication.png" />
-      <Content Include="public\emotions-lens.png" />
-      <Content Include="public\emotions.png" />
-      <Content Include="public\favicon.png" />
-      <Content Include="public\goal-lens.png" />
-      <Content Include="public\goal.png" />
-      <Content Include="public\groupdynamics-lens.png" />
-      <Content Include="public\groupdynamics.png" />
-      <Content Include="public\process-lens.png" />
-      <Content Include="public\process.png" />
-      <Content Include="public\takeaway-lens.png" />
-      <Content Include="public\takeaway.png" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

@@ -15,7 +15,7 @@ module Cube =
     | Emotions
     | TakeAway
 
-    let roll : Lens =
+    let rollDice () : Lens =
         [ Goal; Process; GroupDynamics; Communication; Emotions; TakeAway ]
         |>  Helpers.shuffleR (System.Random())
         |> List.head
@@ -33,7 +33,7 @@ module Cube =
 
     let ofLens (lens : Lens) (deck : Deck) : Deck = deck |> List.filter (isLens lens)
 
-    let tryPickCard (lens : Lens) (deck : Deck) : ( Card option * Deck ) =
+    let tryDrawCard (lens : Lens) (deck : Deck) : ( Card option * Deck ) =
         let card = deck |> ofLens lens |> Helpers.shuffleR (System.Random()) |> Seq.tryHead
         match card with
         | Some c -> 

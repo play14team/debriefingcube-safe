@@ -17,7 +17,7 @@ let deck : Deck = [ goal ; proc ; groupDynamics ; communication ; emotions ; tak
 
 [<Fact>]
 let ``Pick a Group Dynamics card`` () =
-    let (c, d) = deck |> tryPickCard GroupDynamics
+    let (c, d) = deck |> tryDrawCard GroupDynamics
 
     test <@ Option.isSome c @>
     match c with
@@ -30,8 +30,8 @@ let ``Pick a Group Dynamics card`` () =
 
 [<Fact>]
 let ``Pick 2 Group Dynamics card`` () =
-    let (card', deck') = deck |> tryPickCard GroupDynamics
-    let (card'', deck'') = deck' |> tryPickCard GroupDynamics
+    let (card', deck') = deck |> tryDrawCard GroupDynamics
+    let (card'', deck'') = deck' |> tryDrawCard GroupDynamics
 
     test <@ Option.isSome card' @>
     test <@ Option.isNone card'' @>

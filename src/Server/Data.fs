@@ -25,7 +25,11 @@ module Data =
             DeepeningQuestions = card.DeepeningQuestions
         }
 
-    let getCards () : Deck =
+    let loadDeck () : Deck =
         let doc = DebriefingCube.Load("./Data/debriefingcube-en.json")
         let cards = doc.Cards |> Seq.map toCard
         cards |> Seq.toList
+
+    let loadJson () : DebriefingCube.Root =
+        let doc = DebriefingCube.Load("./Data/debriefingcube-en.json")
+        doc
