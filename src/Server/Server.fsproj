@@ -8,9 +8,9 @@
       <Content Remove="Data\debriefingcube-en.json" />
     </ItemGroup>
     <ItemGroup>
-        <None Include="Data\debriefingcube-en.json">
+        <EmbeddedResource Include="Data\debriefingcube-en.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
+        </EmbeddedResource>
         <None Include="Data\DebriefingCube.xlsx" />
         <None Include="paket.references" />
         <Compile Include="..\Shared\Cube.fs" Link="Cube.fs" />

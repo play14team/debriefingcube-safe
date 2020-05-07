@@ -6,7 +6,7 @@ module Data =
     open FSharp.Data
     open DebriefingCube.Cube
 
-    type DebriefingCube = JsonProvider<"./Data/debriefingcube-en.json">
+    type DebriefingCube = JsonProvider<"./Data/debriefingcube-en.json", EmbeddedResource="Server, debriefingcube-en.json">
     
     let toLens s =
         match s : string with
