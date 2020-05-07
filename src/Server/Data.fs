@@ -18,10 +18,6 @@ module Data =
         | "TakeAway" -> TakeAway
 
     let toCard (card : DebriefingCube.Card) : Card =
-        //let number = row.Num
-        //let lens = row.Lens |> toLens
-        //let question = row.MainQuestion
-        //let deepeningQuestions = row.DeepeningQuestions.Split ('\n')
         {
             Number = card.Number
             Lens = card.Lens |> toLens
