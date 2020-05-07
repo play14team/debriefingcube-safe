@@ -5,12 +5,16 @@
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="Data\debriefingcube.en.csv">
+      <Content Remove="Data\debriefingcube-en.json" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="Data\debriefingcube-en.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Include="Data\DebriefingCube.xlsx" />
         <None Include="paket.references" />
         <Compile Include="..\Shared\DebriefingCube.fs" Link="DebriefingCube.fs" />
+        <Compile Include="Data.fs" />
         <Compile Include="..\Shared\Shared.fs" />
         <Compile Include="Server.fs" />
     </ItemGroup>

@@ -1,10 +1,10 @@
-module Tests
+module Cube
 
 open System
 open Xunit
 open Swensen.Unquote
 
-open DebriefindCube.Cube
+open DebriefingCube.Cube
 
 let goal = { Number = 1; Lens = Goal; Question = "Goal 1"; DeepeningQuestions = [ "Deep 1"; "Deep 2"; "Deep 3" ] }
 let proc = { Number = 2; Lens = Process; Question = "Process 1"; DeepeningQuestions = [ "Deep 1"; "Deep 2"; "Deep 3" ] }
@@ -36,3 +36,4 @@ let ``Pick 2 Group Dynamics card`` () =
     test <@ Option.isSome card' @>
     test <@ Option.isNone card'' @>
     test <@ deck' = deck'' @>
+

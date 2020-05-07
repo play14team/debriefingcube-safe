@@ -1,4 +1,4 @@
-namespace DebriefindCube
+namespace DebriefingCube
 
 module Helpers =
     open System

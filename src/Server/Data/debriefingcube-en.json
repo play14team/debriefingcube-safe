@@ -1,0 +1,425 @@
+{
+    "version": "2.0",
+    "cards": [
+        {
+            "number": 1,
+            "lens": "Goal",
+            "question": "What was your Goal? Phrase it in one sentence.",
+            "deepeningQuestions": [
+                "Did anyone have a different Goal?",
+                "Why was there a difference?",
+                "Did this make a difference?"
+            ]
+        },
+        {
+            "number": 2,
+            "lens": "Goal",
+            "question": "What would you have liked to have known beforehand?",
+            "deepeningQuestions": [
+                "How would this have helped?",
+                "Where was the information needed?",
+                "What stopped you from getting it?"
+            ]
+        },
+        {
+            "number": 3,
+            "lens": "Goal",
+            "question": "How did you align on the Goal?",
+            "deepeningQuestions": [
+                "What made the alignment easy/hard?",
+                "Did everyone agree?",
+                "Doing it again, how would you align differently?"
+            ]
+        },
+        {
+            "number": 4,
+            "lens": "Goal",
+            "question": "Was there a shared understanding of the Goal?",
+            "deepeningQuestions": [
+                "How did you reach the shared understanding?",
+                "Would a shared understanding have helped?",
+                "Did everyone agree?"
+            ]
+        },
+        {
+            "number": 5,
+            "lens": "Goal",
+            "question": "How is your understanding of the Goal different now?",
+            "deepeningQuestions": [
+                "How did your awareness change?",
+                "What did you learn?",
+                "How would the experience change, if you knew this beforehand?"
+            ]
+        },
+        {
+            "number": 6,
+            "lens": "Goal",
+            "question": "How did you start?",
+            "deepeningQuestions": [
+                "Was everyone aware?",
+                "Did you have to stop and restart?",
+                "What helped?"
+            ]
+        },
+        {
+            "number": 7,
+            "lens": "Goal",
+            "question": "What was most challenging?",
+            "deepeningQuestions": [
+                "Why?",
+                "Who in the room was best equipped to meet this challenge?",
+                "What did this experience teach you about your day-to-day?"
+            ]
+        },
+        {
+            "number": 8,
+            "lens": "Process",
+            "question": "What steps were taken?",
+            "deepeningQuestions": [
+                "Which steps led to success?",
+                "Which led to failure?",
+                "Which led to learning or improvement?"
+            ]
+        },
+        {
+            "number": 9,
+            "lens": "Process",
+            "question": "Did you assume anything that turned out to be wrong?",
+            "deepeningQuestions": [
+                "What was your assumption?",
+                "What led to this?",
+                "Why was it wrong?"
+            ]
+        },
+        {
+            "number": 10,
+            "lens": "Process",
+            "question": "What was the defining moment that changed things?",
+            "deepeningQuestions": [
+                "What was the impact?",
+                "Could this have happened earlier?",
+                "What would have been different?"
+            ]
+        },
+        {
+            "number": 11,
+            "lens": "Process",
+            "question": "How could you have made the Process more/less pleasant?",
+            "deepeningQuestions": [
+                "What would you have done differently?",
+                "How would this have changed the experience?",
+                "Would there have been a different result?"
+            ]
+        },
+        {
+            "number": 12,
+            "lens": "Process",
+            "question": "What decisions did you make?",
+            "deepeningQuestions": [
+                "How did you decide?",
+                "Why did you need to decide?",
+                "Was it a good or bad decision?"
+            ]
+        },
+        {
+            "number": 13,
+            "lens": "Process",
+            "question": "What ideas, innovation or changes emerged?",
+            "deepeningQuestions": [
+                "Where did they come from?",
+                "How effective were they?",
+                "What surprised you?"
+            ]
+        },
+        {
+            "number": 14,
+            "lens": "Process",
+            "question": "What reminded you of your day-to-day?",
+            "deepeningQuestions": [
+                "How is this similar?",
+                "What is the impact?",
+                "What did this experience teach you?"
+            ]
+        },
+        {
+            "number": 15,
+            "lens": "GroupDynamics",
+            "question": "How did you organize yourselves?",
+            "deepeningQuestions": [
+                "Who was leading/facilitating?",
+                "Who was following?",
+                "How did you make decisions?"
+            ]
+        },
+        {
+            "number": 16,
+            "lens": "GroupDynamics",
+            "question": "Did something unpredictable happen?",
+            "deepeningQuestions": [
+                "What was unpredictable?",
+                "Did you want to control/avoid this?",
+                "How & why?"
+            ]
+        },
+        {
+            "number": 17,
+            "lens": "GroupDynamics",
+            "question": "What changes in GroupDynamics did you experience?",
+            "deepeningQuestions": [
+                "What caused this change?",
+                "How did this impact your experience?",
+                "Was everybody aware of this change?"
+            ]
+        },
+        {
+            "number": 18,
+            "lens": "GroupDynamics",
+            "question": "How was the participation distributed?",
+            "deepeningQuestions": [
+                "Was everybody included?",
+                "How did you achieve this?",
+                "Was this ideal?"
+            ]
+        },
+        {
+            "number": 19,
+            "lens": "GroupDynamics",
+            "question": "How could you have worked together better?",
+            "deepeningQuestions": [
+                "How would this have helped?",
+                "When did you realize this was an option?",
+                "What stopped you?"
+            ]
+        },
+        {
+            "number": 20,
+            "lens": "GroupDynamics",
+            "question": "What interesting behaviours did you observe?",
+            "deepeningQuestions": [
+                "Why was this interesting to you?",
+                "What was/wasn't helpful?",
+                "Why?"
+            ]
+        },
+        {
+            "number": 21,
+            "lens": "GroupDynamics",
+            "question": "Where have you encountered similar behaviours?",
+            "deepeningQuestions": [
+                "Describe the similarity!",
+                "Is there a similar impact?",
+                "What did this experience teach you about your day-to-day?"
+            ]
+        },
+        {
+            "number": 22,
+            "lens": "Communication",
+            "question": "What didn’t you say, that you wish you had?",
+            "deepeningQuestions": [
+                "What stopped you from saying it?",
+                "What would have been different if said?",
+                "What question would you have liked to ask yourself/the team?"
+            ]
+        },
+        {
+            "number": 23,
+            "lens": "Communication",
+            "question": "What non-verbal Communication was there?",
+            "deepeningQuestions": [
+                "What was the impact on you and the group?",
+                "Could others have interpreted this differently?",
+                "How could you be certain?"
+            ]
+        },
+        {
+            "number": 24,
+            "lens": "Communication",
+            "question": "What did this teach you about great communication?",
+            "deepeningQuestions": [
+                "What was great about it?",
+                "How would you teach this to others?",
+                "List your top five Communication take-aways!"
+            ]
+        },
+        {
+            "number": 25,
+            "lens": "Communication",
+            "question": "What misCommunications were there?",
+            "deepeningQuestions": [
+                "What were the causes?",
+                "How did this impact the experience?",
+                "How could you have communicated better?"
+            ]
+        },
+        {
+            "number": 26,
+            "lens": "Communication",
+            "question": "Did you communicate enough?",
+            "deepeningQuestions": [
+                "Why?",
+                "How would more/less communication have impacted your experience?",
+                "Did anything stop you from communicating more or less?"
+            ]
+        },
+        {
+            "number": 27,
+            "lens": "Communication",
+            "question": "Doing it again, how would you communicate differently?",
+            "deepeningQuestions": [
+                "What would be the impact on you/others?",
+                "Why didn't this happen earlier?",
+                "What would have helped you realise?"
+            ]
+        },
+        {
+            "number": 28,
+            "lens": "Communication",
+            "question": "What is left unspoken?",
+            "deepeningQuestions": [
+                "How did you notice?",
+                "Would speaking about it have helped?",
+                "What did this experience teach you about your day-to-day?"
+            ]
+        },
+        {
+            "number": 29,
+            "lens": "Emotions",
+            "question": "How did you feel?",
+            "deepeningQuestions": [
+                "Were others aware that you felt that way?",
+                "What led to this feeling?",
+                "How did you feel before?"
+            ]
+        },
+        {
+            "number": 30,
+            "lens": "Emotions",
+            "question": "What was this experience like?",
+            "deepeningQuestions": [
+                "Describe with a #hashtag!",
+                "What about it made it like this?",
+                "What would be a good comparison?"
+            ]
+        },
+        {
+            "number": 31,
+            "lens": "Emotions",
+            "question": "How did you deal with your emotions?",
+            "deepeningQuestions": [
+                "Which emotions exactly?",
+                "Has this happened to you before?",
+                "Did anybody else notice?"
+            ]
+        },
+        {
+            "number": 32,
+            "lens": "Emotions",
+            "question": "What did you like or dislike about the experience?",
+            "deepeningQuestions": [
+                "What specifically?",
+                "Why?",
+                "What else?"
+            ]
+        },
+        {
+            "number": 33,
+            "lens": "Emotions",
+            "question": "Where have you observed similar emotions and behaviours?",
+            "deepeningQuestions": [
+                "Where did it happen (work/private life)?",
+                "How was it similar?",
+                "What happened?"
+            ]
+        },
+        {
+            "number": 34,
+            "lens": "Emotions",
+            "question": "When did you care most/least about the outcome?",
+            "deepeningQuestions": [
+                "What made you care more/less?",
+                "Did anybody feel the same way?",
+                "How strongly did you feel about it?"
+            ]
+        },
+        {
+            "number": 35,
+            "lens": "Emotions",
+            "question": "What else would you like to share?",
+            "deepeningQuestions": [
+                "What did you learn about other people's emotions?",
+                "Did empathy play a role?",
+                "What did this experience teach you about your day-to-day?"
+            ]
+        },
+        {
+            "number": 36,
+            "lens": "TakeAway",
+            "question": "What does this experience remind you of in your day-to-day?",
+            "deepeningQuestions": [
+                "How was this similar?",
+                "What insights does this give you?",
+                "Does this present any opportunities?"
+            ]
+        },
+        {
+            "number": 37,
+            "lens": "TakeAway",
+            "question": "What did you learn about yourself and the team?",
+            "deepeningQuestions": [
+                "Was this a surprise?",
+                "What would you share with others?",
+                "Phrase it as a slogan or motto!"
+            ]
+        },
+        {
+            "number": 38,
+            "lens": "TakeAway",
+            "question": "What did you do that will be beneficial in your day-to-day life?",
+            "deepeningQuestions": [
+                "What would you like to happen?",
+                "What first steps could you take?",
+                "How would you know that you are succeeding?"
+            ]
+        },
+        {
+            "number": 39,
+            "lens": "TakeAway",
+            "question": "What are you more aware of now?",
+            "deepeningQuestions": [
+                "How will you remember this tomorrow?",
+                "Does this inspire you?",
+                "How will you use this inspiration to help you or your team?"
+            ]
+        },
+        {
+            "number": 40,
+            "lens": "TakeAway",
+            "question": "What are the top 5 things you will take away?",
+            "deepeningQuestions": [
+                "What inspired your top 5?",
+                "What are you going to do with them?",
+                "How will you share with others?"
+            ]
+        },
+        {
+            "number": 41,
+            "lens": "TakeAway",
+            "question": "If you had a magic wand what one thing would you change?",
+            "deepeningQuestions": [
+                "Why?",
+                "Why?",
+                "Why?"
+            ]
+        },
+        {
+            "number": 42,
+            "lens": "TakeAway",
+            "question": "What would an expert make of your experience?",
+            "deepeningQuestions": [
+                "How would the expert summarize it in five words?",
+                "What would the expert suggest?",
+                "What did this experience teach you about your day-to-day?"
+            ]
+        }
+    ]
+}
