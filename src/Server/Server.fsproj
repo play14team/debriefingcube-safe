@@ -13,7 +13,7 @@
         </None>
         <None Include="Data\DebriefingCube.xlsx" />
         <None Include="paket.references" />
-        <Compile Include="..\Shared\DebriefingCube.fs" Link="DebriefingCube.fs" />
+        <Compile Include="..\Shared\Cube.fs" Link="Cube.fs" />
         <Compile Include="Data.fs" />
         <Compile Include="..\Shared\Shared.fs" />
         <Compile Include="Server.fs" />
