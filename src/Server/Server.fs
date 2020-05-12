@@ -29,6 +29,14 @@ let webApp = router {
             let deck = loadDeck()
             return! json deck next ctx
         })
+
+    get "/api/card" (fun next ctx ->
+        task {
+            let deck = loadDeck()
+            let card = deck |> List.head
+            return! json card next ctx
+        })
+
 }
 
 let app = application {

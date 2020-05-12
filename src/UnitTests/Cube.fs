@@ -8,7 +8,7 @@ open DebriefingCube.Cube
 
 [<Fact>]
 let ``Pick a Group Dynamics card`` () =
-    let (c, d) = DebriefingCube.FakeData.deck |> tryDrawCard GroupDynamics
+    let (c, d) = DebriefingCube.FakeData.deck |> Deck.tryDrawCard GroupDynamics
 
     test <@ Option.isSome c @>
     match c with
@@ -21,8 +21,8 @@ let ``Pick a Group Dynamics card`` () =
 
 [<Fact>]
 let ``Pick 2 Group Dynamics card`` () =
-    let (card', deck') = DebriefingCube.FakeData.deck |> tryDrawCard GroupDynamics
-    let (card'', deck'') = deck' |> tryDrawCard GroupDynamics
+    let (card', deck') = DebriefingCube.FakeData.deck |> Deck.tryDrawCard GroupDynamics
+    let (card'', deck'') = deck' |> Deck.tryDrawCard GroupDynamics
 
     test <@ Option.isSome card' @>
     test <@ Option.isNone card'' @>

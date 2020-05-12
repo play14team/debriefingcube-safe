@@ -17,6 +17,9 @@ module Cube =
 
     module Lens =
 
+        let all =
+            [ Goal; Process; GroupDynamics; Communication; Emotions; TakeAway ]    
+
         let toLens s =
             match s : string with
             | "Goal" -> Goal
@@ -31,7 +34,7 @@ module Cube =
             sprintf "%A" l
 
     let rollDice () : Lens =
-        [ Goal; Process; GroupDynamics; Communication; Emotions; TakeAway ]
+        Lens.all
         |>  Helpers.shuffleR (System.Random())
         |> List.head
 
@@ -39,34 +42,43 @@ module Cube =
         Number : int
         Lens : Lens
         Question : string
-        DeepeningQuestions : string seq
+        //DeepeningQuestions : string seq
     }
-
-    type Deck = Card list
 
     module Card = 
         let isLens (lens : Lens) (card : Card) = card.Lens = lens
 
-        let ofLens (lens : Lens) (deck : Deck) : Deck = deck |> List.filter (isLens lens)
+    type Deck = Card list
 
-    let tryDrawCard (lens : Lens) (deck : Deck) : ( Card option * Deck ) =
-        let card = deck |> Card.ofLens lens |> Helpers.shuffleR (System.Random()) |> Seq.tryHead
-        match card with
-        | Some c -> 
-            let remainingDeck : Deck = deck |> List.filter (fun x -> x <> c)
-            (card, remainingDeck)
-        | None ->
-            (None, deck)
+    module Deck =
+        let ofLens (lens : Lens) (deck : Deck) : Deck = deck |> List.filter (Card.isLens lens)
+
+        let countLens (lens : Lens) (deck : Deck) : int =
+            let lensCards = deck |> ofLens lens
+            lensCards.Length
+
+        let countLenses (deck : Deck) =
+            Lens.all
+            |> List.map (fun l -> l, (countLens l deck) )
+
+        let tryDrawCard (lens : Lens) (deck : Deck) : ( Card option * Deck ) =
+            let card = deck |> ofLens lens |> Helpers.shuffleR (System.Random()) |> Seq.tryHead
+            match card with
+            | Some c -> 
+                let remainingDeck : Deck = deck |> List.filter (fun x -> x <> c)
+                (card, remainingDeck)
+            | None ->
+                (None, deck)
 
 module FakeData =
 
     open Cube
 
-    let goal : Card = { Number = 1; Lens = Goal; Question = "Goal 1"; DeepeningQuestions = [ "Deep 1"; "Deep 2"; "Deep 3" ] }
-    let proc : Card = { Number = 2; Lens = Process; Question = "Process 1"; DeepeningQuestions = [ "Deep 1"; "Deep 2"; "Deep 3" ] }
-    let groupDynamics : Card = { Number = 4; Lens = GroupDynamics; Question = "GroupDynamics 1"; DeepeningQuestions = [ "Deep 1"; "Deep 2"; "Deep 3" ] }
-    let communication : Card = { Number = 5; Lens = Communication; Question = "Communication 1"; DeepeningQuestions = [ "Deep 1"; "Deep 2"; "Deep 3" ] }
-    let emotions : Card = { Number = 6; Lens = Emotions; Question = "Emotions 1"; DeepeningQuestions = [ "Deep 1"; "Deep 2"; "Deep 3" ] }
-    let takeAway : Card = { Number = 3; Lens = TakeAway; Question = "TakeAway 1"; DeepeningQuestions = [ "Deep 1"; "Deep 2"; "Deep 3" ] }
+    let goal : Card = { Number = 1; Lens = Goal; Question = "Goal 1" }
+    let proc : Card = { Number = 2; Lens = Process; Question = "Process 1" }
+    let groupDynamics : Card = { Number = 4; Lens = GroupDynamics; Question = "GroupDynamics 1" }
+    let communication : Card = { Number = 5; Lens = Communication; Question = "Communication 1" }
+    let emotions : Card = { Number = 6; Lens = Emotions; Question = "Emotions 1" }
+    let takeAway : Card = { Number = 3; Lens = TakeAway; Question = "TakeAway 1" }
     
     let deck : Deck = [ goal ; proc ; groupDynamics ; communication ; emotions ; takeAway ]

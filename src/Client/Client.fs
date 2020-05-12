@@ -17,10 +17,9 @@ open DebriefingCube.Cube
 // we mark it as optional, because initially it will not be available from the client
 // the initial value will be requested from server
 type Model = {
-    Counter: Counter option
     Lens: Lens option
     Card: Card option
-    Deck: Deck option
+    Deck: Deck
     }
 
 // The Msg type defines what events/actions can occur while the application is running
@@ -28,13 +27,13 @@ type Model = {
 type Msg =
     | RollDice
     | Reset
-    | InitialDeckLoaded of Counter
+    | InitialDeckLoaded of Deck
 
-let initialDeck () = Fetch.fetchAs<Counter> "/api/init"
+let initialDeck () = Fetch.fetchAs<Deck> "/api/deck"
 
 // defines the initial state and initial command (= side-effect) of the application
 let init () : Model * Cmd<Msg> =
-    let initialModel = { Counter = None ; Lens = None ; Deck = None ; Card = None }
+    let initialModel = { Lens = None ; Deck = [] ; Card = None }
     let getDeckCmd =
         Cmd.OfPromise.perform initialDeck () InitialDeckLoaded
     initialModel, getDeckCmd
@@ -43,16 +42,17 @@ let init () : Model * Cmd<Msg> =
 // It can also run side-effects (encoded as commands) like calling the server via Http.
 // these commands in turn, can dispatch messages to which the update function will react.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
-    match currentModel.Counter, msg with
+    match currentModel, msg with
     | _, Reset ->
         init()
-    | Some countrer, RollDice ->
-        let lens = rollDice()
-        //let (c, d) = deck |> tryDrawCard lens
-        let nextModel = { currentModel with Counter = Some { Value = countrer.Value + 1 } ; Lens = Some lens }
+    | model, RollDice ->
+        let { Lens=_ ; Card=_ ; Deck= deck } = model
+        let newLens = rollDice()
+        let (newCard, newDeck) = deck |> Deck.tryDrawCard newLens
+        let nextModel = { Lens = Some newLens ; Card = newCard ; Deck = newDeck}
         nextModel, Cmd.none
-    | _, InitialDeckLoaded initialCount ->
-        let nextModel = { Counter = Some initialCount ; Lens = None ; Deck = None ; Card = None }
+    | _, InitialDeckLoaded initialDeck ->
+        let nextModel = { Lens = None ; Deck = initialDeck ; Card = None }
         nextModel, Cmd.none
     | _ -> currentModel, Cmd.none
 
@@ -81,12 +81,17 @@ let safeComponents =
           components ]
 
 let showCounter = function
-| { Counter = Some counter } -> string counter.Value
-| { Counter = None   } -> "Loading..."
+| { Deck = deck } ->
+    let counts = deck |> Deck.countLenses
+    string (sprintf "%A" counts)
 
 let showLens = function
-| { Lens = Some lens } -> string lens
-| { Lens = None   } -> "Roll the dice"
+| Some lens -> string lens
+| _ -> "Roll the dice"
+
+let showCard = function
+| Some card -> string card.Question
+| _ -> "No card"
 
 let getDicePicture model =
     match model.Lens with
@@ -115,10 +120,12 @@ let view (model : Model) (dispatch : Msg -> unit) =
                 Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                     [ Heading.h3 [] [ str (showCounter model) ] ]  
                 Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str (showLens model) ] ]
+                    [ Heading.h3 [] [ str (showLens model.Lens) ] ]
                 Content.content []
                     [ Image.image [ Image.Is128x128 ]
                         [ img [ Src (getDicePicture model) ] ] ]
+                Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+                    [ Heading.h3 [] [ str (showCard model.Card) ] ]
                 Columns.columns []
                     [ Column.column [] [ button "Roll dice" (fun _ -> dispatch RollDice) ]
                       Column.column [] [ button "Reset" (fun _ -> dispatch Reset) ]
