@@ -10,6 +10,7 @@
         <None Include="style.scss" />
         <Content Include="public\communication-lens.png" />
         <Content Include="public\communication.png" />
+        <Content Include="public\cube.png" />
         <Content Include="public\emotions-lens.png" />
         <Content Include="public\emotions.png" />
         <Content Include="public\favicon.png" />
