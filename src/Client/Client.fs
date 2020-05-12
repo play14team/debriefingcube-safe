@@ -17,6 +17,7 @@ open DebriefingCube.Cube
 // we mark it as optional, because initially it will not be available from the client
 // the initial value will be requested from server
 type Model = {
+    Counter: Counter option
     Lens: Lens option
     Deck: Deck option
     Card: Card option
@@ -26,13 +27,13 @@ type Model = {
 // the state of the application changes *only* in reaction to these events
 type Msg =
     | RollDice
-    | InitialDeckLoaded of Deck
+    | InitialDeckLoaded of Counter
 
-let initialDeck () = Fetch.fetchAs<Deck> "/api/deck"
+let initialDeck () = Fetch.fetchAs<Counter> "/api/init"
 
 // defines the initial state and initial command (= side-effect) of the application
 let init () : Model * Cmd<Msg> =
-    let initialModel = { Lens = None ; Deck = None ; Card = None }
+    let initialModel = { Counter = None ; Lens = None ; Deck = None ; Card = None }
     let getDeckCmd =
         Cmd.OfPromise.perform initialDeck () InitialDeckLoaded
     initialModel, getDeckCmd
@@ -41,14 +42,14 @@ let init () : Model * Cmd<Msg> =
 // It can also run side-effects (encoded as commands) like calling the server via Http.
 // these commands in turn, can dispatch messages to which the update function will react.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
-    match currentModel.Lens, currentModel.Deck, currentModel.Card, msg with
-    | _, Some deck, _, RollDice ->
+    match currentModel.Counter, msg with
+    | Some countrer, RollDice ->
         let lens = rollDice()
-        let (c, d) = deck |> tryDrawCard lens
-        let nextModel = { currentModel with Lens = Some lens ; Deck = Some d ; Card = c }
+        //let (c, d) = deck |> tryDrawCard lens
+        let nextModel = { currentModel with Counter = Some { Value = countrer.Value + 1 } ; Lens = Some lens }
         nextModel, Cmd.none
-    | _, _, _, InitialDeckLoaded initialDeck ->
-        let nextModel = { Lens = None ; Deck = Some initialDeck ; Card = None }
+    | _, InitialDeckLoaded initialCount ->
+        let nextModel = { Counter = Some initialCount ; Lens = None ; Deck = None ; Card = None }
         nextModel, Cmd.none
     | _ -> currentModel, Cmd.none
 
@@ -76,11 +77,14 @@ let safeComponents =
           str " powered by: "
           components ]
 
-let show (model : Model) : string =
-    match model.Lens, model.Deck, model.Card with
-    | _, _, Some card -> sprintf "%A : %s" card.Lens card.Question
-    | Some lens, _, None -> sprintf "No more card for lens %A" lens
-    | _, _, _ -> "Loading..."
+let showCounter = function
+| { Counter = Some counter } -> string counter.Value
+| { Counter = None   } -> "Loading..."
+
+let showLens = function
+| { Lens = Some lens } -> string lens
+| { Lens = None   } -> "Roll the dice"
+
 
 let button txt onClick =
     Button.button
@@ -98,7 +102,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
 
           Container.container []
               [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str ("Debriefing cube: " + show model) ] ]
+                    [ Heading.h3 [] [ str ("Lens: " + showLens model) ] ]
                 Columns.columns []
                     [ Column.column [] [ button "Roll dice" (fun _ -> dispatch RollDice) ] ] ]
 

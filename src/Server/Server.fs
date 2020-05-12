@@ -4,6 +4,7 @@ open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
 
+open Shared
 open DebriefingCube.Cube
 open DebriefingCube.Data
 
@@ -16,6 +17,13 @@ let port =
     |> tryGetEnv |> Option.map uint16 |> Option.defaultValue 8085us
 
 let webApp = router {
+
+    get "/api/init" (fun next ctx ->
+        task {
+            let counter = {Value = 42}
+            return! json counter next ctx
+        })
+
     get "/api/deck" (fun next ctx ->
         task {
             let deck = loadDeck()
