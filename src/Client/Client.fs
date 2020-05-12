@@ -19,14 +19,15 @@ open DebriefingCube.Cube
 type Model = {
     Counter: Counter option
     Lens: Lens option
-    Deck: Deck option
     Card: Card option
+    Deck: Deck option
     }
 
 // The Msg type defines what events/actions can occur while the application is running
 // the state of the application changes *only* in reaction to these events
 type Msg =
     | RollDice
+    | Reset
     | InitialDeckLoaded of Counter
 
 let initialDeck () = Fetch.fetchAs<Counter> "/api/init"
@@ -43,6 +44,8 @@ let init () : Model * Cmd<Msg> =
 // these commands in turn, can dispatch messages to which the update function will react.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     match currentModel.Counter, msg with
+    | _, Reset ->
+        init()
     | Some countrer, RollDice ->
         let lens = rollDice()
         //let (c, d) = deck |> tryDrawCard lens
@@ -85,6 +88,13 @@ let showLens = function
 | { Lens = Some lens } -> string lens
 | { Lens = None   } -> "Roll the dice"
 
+let getDicePicture model =
+    match model.Lens with
+    | Some lens ->
+        let s = lens |> sprintf "%A"
+        s.ToLower() + "-lens.png"
+    | None -> "cube.png"
+        
 
 let button txt onClick =
     Button.button
@@ -98,13 +108,22 @@ let view (model : Model) (dispatch : Msg -> unit) =
         [ Navbar.navbar [ Navbar.Color IsPrimary ]
             [ Navbar.Item.div [ ]
                 [ Heading.h2 [ ]
-                    [ str "SAFE Template" ] ] ]
+                    [ str "The Debriefing Cube" ] ] ]
 
           Container.container []
-              [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str ("Lens: " + showLens model) ] ]
+              [
+                Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+                    [ Heading.h3 [] [ str (showCounter model) ] ]  
+                Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+                    [ Heading.h3 [] [ str (showLens model) ] ]
+                Content.content []
+                    [ Image.image [ Image.Is128x128 ]
+                        [ img [ Src (getDicePicture model) ] ] ]
                 Columns.columns []
-                    [ Column.column [] [ button "Roll dice" (fun _ -> dispatch RollDice) ] ] ]
+                    [ Column.column [] [ button "Roll dice" (fun _ -> dispatch RollDice) ]
+                      Column.column [] [ button "Reset" (fun _ -> dispatch Reset) ]
+                    ]
+              ]
 
           Footer.footer [ ]
                 [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
