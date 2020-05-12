@@ -4,6 +4,7 @@ open FSharp.Control.Tasks.V2
 open Giraffe
 open Saturn
 
+open DebriefingCube.Cube
 open DebriefingCube.Data
 
 let tryGetEnv = System.Environment.GetEnvironmentVariable >> function null | "" -> None | x -> Some x
@@ -19,12 +20,6 @@ let webApp = router {
         task {
             let deck = loadDeck()
             return! json deck next ctx
-        })
-
-    get "/api/cube" (fun next ctx ->
-        task {
-            let content = DebriefingCube.Data.loadJson()
-            return! json content next ctx
         })
 }
 

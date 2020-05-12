@@ -15,6 +15,21 @@ module Cube =
     | Emotions
     | TakeAway
 
+    module Lens =
+
+        let toLens s =
+            match s : string with
+            | "Goal" -> Goal
+            | "Process" -> Process
+            | "GroupDynamics" -> GroupDynamics
+            | "Communication" -> Communication
+            | "Emotions" -> Emotions
+            | "TakeAway" -> TakeAway
+            | _ -> raise <| System.ArgumentOutOfRangeException("s", "Cannot be mapped")
+
+        let fromLens (l : Lens) =
+            sprintf "%A" l
+
     let rollDice () : Lens =
         [ Goal; Process; GroupDynamics; Communication; Emotions; TakeAway ]
         |>  Helpers.shuffleR (System.Random())
@@ -29,12 +44,13 @@ module Cube =
 
     type Deck = Card list
 
-    let isLens (lens : Lens) (card : Card) = card.Lens = lens
+    module Card = 
+        let isLens (lens : Lens) (card : Card) = card.Lens = lens
 
-    let ofLens (lens : Lens) (deck : Deck) : Deck = deck |> List.filter (isLens lens)
+        let ofLens (lens : Lens) (deck : Deck) : Deck = deck |> List.filter (isLens lens)
 
     let tryDrawCard (lens : Lens) (deck : Deck) : ( Card option * Deck ) =
-        let card = deck |> ofLens lens |> Helpers.shuffleR (System.Random()) |> Seq.tryHead
+        let card = deck |> Card.ofLens lens |> Helpers.shuffleR (System.Random()) |> Seq.tryHead
         match card with
         | Some c -> 
             let remainingDeck : Deck = deck |> List.filter (fun x -> x <> c)
