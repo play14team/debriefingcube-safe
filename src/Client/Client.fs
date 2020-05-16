@@ -53,8 +53,6 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     | _, InitialDeckLoaded initialDeck ->
         let nextModel = { Lens = None ; Deck = initialDeck ; Card = None }
         nextModel, Cmd.none
-    | _ -> currentModel, Cmd.none
-
 
 let safeComponents =
     let components =
@@ -79,36 +77,63 @@ let safeComponents =
           str " powered by: "
           components ]
 
-let showCounter = function
-| { Deck = deck } ->
-    let counts = deck |> Deck.countLenses
-    string (sprintf "%A" counts)
-
-let showLens = function
-| Some lens -> string lens
-| _ -> "Roll the dice"
-
-let showCard = function
-| Some card -> card.Question
-| _ -> "No card"
-
-let showCardDetails = function
-| Some card -> sprintf "%A" card.DeepeningQuestions
-| _ -> ""
-
-let getDicePicture model =
-    match model.Lens with
-    | Some lens ->
-        let s = lens |> sprintf "%A"
-        s.ToLower() + "-lens.png"
-    | None -> "cube.png"
-
 let button txt onClick =
     Button.button
         [ Button.IsFullWidth
           Button.Color IsPrimary
           Button.OnClick onClick ]
         [ str txt ]
+
+let lensDeck (lens : Lens, count : int) =
+    Level.item [ Level.Item.HasTextCentered ]
+      [ div [ ]
+          [ Level.heading [ ]
+              [ str (Lens.toString lens) ]
+            Level.title [ ]
+              [ str (sprintf "%i" count) ] ] ]
+
+let showDeck deck =
+    let counters = deck |> Deck.countLenses
+    let levels = counters |> List.map lensDeck 
+    Level.level [ ] levels
+
+let cubeImage (lens : Lens option) =
+    match lens with
+    | Some l -> (lens |> sprintf "%A-lens.png").ToLower()
+    | None -> "cube.png"
+
+let showLens = function
+| Some lens -> Lens.toString lens
+| _ -> "Roll the dice"
+
+let tryShowCube (lens : Lens option) (dispatch : Msg -> unit) =
+    div [ ClassName "block" ] [ Box.box' [ ] [
+        Image.image [ Image.Is128x128 ] [ img [ Src (cubeImage lens) ] ]
+        Heading.h4 [] [ str (showLens lens) ]
+        Columns.columns []
+            [ Column.column [] [ button "Roll" (fun _ -> dispatch RollDice) ]
+              Column.column [] [ button "Reset" (fun _ -> dispatch Reset) ]
+              Column.column [] []
+              Column.column [] []
+              Column.column [] []
+              Column.column [] []
+            ]
+    ] ]
+
+
+let tryShowCard (card: Card option) =
+    match card with
+    | Some c ->
+        let question = h2 [] [ str c.Question ]
+        let deepeningQuestions = c.DeepeningQuestions |> Array.map (fun q -> h4 [] [ str q ]) |> Array.toList
+        let all = question :: deepeningQuestions
+        div [ ClassName "block" ] [ Box.box' [ ] [
+            Content.content [ ] all ] ]
+    | None ->
+        div [ ClassName "block" ] [ Box.box' [ ] [
+            Content.content [ ]
+                [ h1 [ ] [str "Roll the dice"] ]
+        ] ]
 
 let view (model : Model) (dispatch : Msg -> unit) =
     div []
@@ -117,23 +142,11 @@ let view (model : Model) (dispatch : Msg -> unit) =
                 [ Heading.h2 [ ]
                     [ str "The Debriefing Cube" ] ] ]
 
-          Container.container []
+          Container.container [ Container.IsFluid ]
               [
-                Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str (showCounter model) ] ]  
-                Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str (showLens model.Lens) ] ]
-                Content.content []
-                    [ Image.image [ Image.Is128x128 ]
-                        [ img [ Src (getDicePicture model) ] ] ]
-                Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str (showCard model.Card) ]
-                      Heading.h4 [] [ str (showCardDetails model.Card) ]
-                    ]
-                Columns.columns []
-                    [ Column.column [] [ button "Roll dice" (fun _ -> dispatch RollDice) ]
-                      Column.column [] [ button "Reset" (fun _ -> dispatch Reset) ]
-                    ]
+                tryShowCube model.Lens dispatch
+                tryShowCard model.Card
+                showDeck model.Deck
               ]
 
           Footer.footer [ ]
