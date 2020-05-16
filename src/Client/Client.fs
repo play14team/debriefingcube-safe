@@ -78,70 +78,79 @@ let safeComponents =
           str " powered by: "
           components ]
 
-let button txt onClick =
+let button txt onClick color =
     Button.button
         [ Button.IsFullWidth
-          Button.Color IsPrimary
+          Button.Color color
           Button.OnClick onClick ]
         [ str txt ]
 
-let cubeImage (lens : Lens option) =
-    match lens with
-    | Some l -> (lens |> sprintf "%A-lens.png").ToLower()
+let cubeImage = function
+    | Some l -> (l |> sprintf "%A-lens.png").ToLower()
     | None -> "cube.png"
 
 let showLens = function
 | Some lens -> Lens.toString lens
 | _ -> "Roll the dice"
 
-let tryShowCube (lens : Lens option) (dispatch : Msg -> unit) =
-    div [ ClassName "block" ] [ Box.box' [ ] [
-        Image.image [ Image.Is128x128 ] [ img [ Src (cubeImage lens) ] ]
-        Heading.h4 [] [ str (showLens lens) ]
-        Columns.columns []
-            [ Column.column [] [ button "Roll" (fun _ -> dispatch RollDice) ]
-              Column.column [] [ button "Reset" (fun _ -> dispatch Reset) ]
-              Column.column [] []
-              Column.column [] []
-              Column.column [] []
-              Column.column [] []
-            ]
-    ] ]
+let showCube (lens : Lens option) (dispatch : Msg -> unit) =
+    Columns.columns [ Columns.IsGap (Screen.All, Columns.Is1) ]
+     [ Column.column [ ]
+         [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+             [ Image.image
+                [ Image.CustomClass "is-256x256 is-inline-block" ]
+                    [ img [ Src (cubeImage lens) ] ]
+               Heading.h4 [] [ str (showLens lens) ]
+               Columns.columns [ Columns.IsGap (Screen.All, Columns.Is8) ]
+                [ Column.column [ ]
+                    [ button "Roll" (fun _ -> dispatch RollDice) IsPrimary ]
+                  Column.column [ ]
+                    [ button "Reset" (fun _ -> dispatch Reset) IsDanger ]
+                ]
+             ]
+         ]
+     ]
 
+let deepeningQuestion q =
+    h4 [] [ Icon.icon [ ]
+                [ i [ ClassName "fas fa-angle-right" ] [ ] ]
+            str q ]
 
-let tryShowCard (card: Card option) =
-    match card with
-    | Some c ->
-        let question = h2 [] [ str c.Question ]
-        let deepeningQuestions = c.DeepeningQuestions |> Array.map (fun q -> h4 [] [ str q ]) |> Array.toList
-        let all = question :: deepeningQuestions
-        div [ ClassName "block" ] [ Box.box' [ ] [
-            Content.content [ ] all ] ]
-    | None ->
-        div [ ClassName "block" ] [ Box.box' [ ] [
-            Content.content [ ]
-                [ h1 [ ] [str "Roll the dice"] ]
-        ] ]
+let showCard (card : Card) =
+    let question = h3 [] [ str card.Question ]
+    let deepeningQuestions = card.DeepeningQuestions |> Array.map deepeningQuestion |> Array.toList
+    let all = question :: deepeningQuestions
+    Content.content [ ] all
+
+let noCard =
+    Content.content [ ] [ h3 [ ] [str "No card"] ]
+
+let tryShowCard = function
+    | Some c -> showCard c
+    | None -> noCard
+
+let showDeckImage (lens: Lens) =
+    Image.image [ Image.IsSquare ] [ img [ Src (sprintf "%A-back.png" lens) ] ]
 
 let lensDeck (lens : Lens, count : int) =
-    Level.item [ Level.Item.HasTextCentered ]
-      [ div [ ]
-          [ Level.heading [ ]
-              [ str (Lens.toString lens) ]
-            Level.title [ ]
-              [ str (sprintf "%i" count) ] ] ]
+    Column.column [ ]
+        [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+            [ str (Lens.toString lens)
+              h2 [] [ str (sprintf "%i" count) ]
+              p [] [ showDeckImage lens ]
+            ]
+        ]
 
 let showDeck deck =
     let counters = deck |> Deck.countLenses
-    let levels = counters |> List.map lensDeck 
-    Level.level [ ] levels
+    let columns = counters |> List.map lensDeck 
+    Columns.columns [ Columns.IsGap (Screen.All, Columns.Is1) ] columns
 
 let showLoading =
     Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
         [ h2 [] [ str "Loading..." ] ]
 
-let tryShowDeck (deck : Deck option) =
-    match deck with
+let tryShowDeck = function
     | Some d -> showDeck d
     | None -> showLoading
 
@@ -154,9 +163,29 @@ let view (model : Model) (dispatch : Msg -> unit) =
 
           Container.container [ Container.IsFluid ]
               [
-                tryShowCube model.Lens dispatch
-                tryShowCard model.Card
-                tryShowDeck model.Deck
+                Tile.ancestor [ ]
+                    [ Tile.parent [ Tile.IsVertical
+                                    Tile.Size Tile.Is4 ]
+                        [ Tile.child [ ]
+                            [ Box.box' [ ]
+                                [ Heading.p [ ]
+                                    [ str "Cube" ]
+                                  p [ ]
+                                    [ showCube model.Lens dispatch ] ] ]
+                          Tile.child [ ]
+                            [ Box.box' [ ]
+                                [ Heading.p [ ]
+                                    [ str "Card" ]
+                                  p [ ]
+                                    [ tryShowCard model.Card ] ] ]
+                        ]
+                      Tile.parent [ ]
+                        [ Tile.child [ ]
+                            [ Box.box' [ Common.Props [ Style [ Height "100%" ] ] ]
+                                [ Heading.p [ ]
+                                    [ str "Deck" ]
+                                  p [ ]
+                                    [ tryShowDeck model.Deck ] ] ] ] ]
               ]
 
           Footer.footer [ ]

@@ -8,18 +8,24 @@
         <None Include="index.html" />
         <None Include="paket.references" />
         <None Include="style.scss" />
+        <Content Include="public\communication-back.png" />
         <Content Include="public\communication-lens.png" />
         <Content Include="public\communication.png" />
         <Content Include="public\cube.png" />
+        <Content Include="public\emotions-back.png" />
         <Content Include="public\emotions-lens.png" />
         <Content Include="public\emotions.png" />
         <Content Include="public\favicon.png" />
+        <Content Include="public\goal-back.png" />
         <Content Include="public\goal-lens.png" />
         <Content Include="public\goal.png" />
+        <Content Include="public\groupdynamics-back.png" />
         <Content Include="public\groupdynamics-lens.png" />
         <Content Include="public\groupdynamics.png" />
+        <Content Include="public\process-back.png" />
         <Content Include="public\process-lens.png" />
         <Content Include="public\process.png" />
+        <Content Include="public\takeaway-back.png" />
         <Content Include="public\takeaway-lens.png" />
         <Content Include="public\takeaway.png" />
         <Compile Include="..\Shared\Cube.fs" Link="Cube.fs" />

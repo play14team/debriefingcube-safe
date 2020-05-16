@@ -14,3 +14,8 @@ $family-primary: 'Open Sans';
 
 // Bulma
 @import "~bulma/bulma";
+
+.image.is-256x256 {
+    height: 256px;
+    width: 256px;
+}
