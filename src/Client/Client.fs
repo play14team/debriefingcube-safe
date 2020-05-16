@@ -18,7 +18,7 @@ open DebriefingCube.Cube
 type Model = {
     Lens: Lens option
     Card: Card option
-    Deck: Deck
+    Deck: Deck option
     }
 
 // The Msg type defines what events/actions can occur while the application is running
@@ -32,7 +32,7 @@ let initialDeck () = Fetch.fetchAs<Deck> "/api/deck"
 
 // defines the initial state and initial command (= side-effect) of the application
 let init () : Model * Cmd<Msg> =
-    let initialModel = { Lens = None ; Deck = [] ; Card = None }
+    let initialModel = { Lens = None ; Deck = None ; Card = None }
     let getDeckCmd =
         Cmd.OfPromise.perform initialDeck () InitialDeckLoaded
     initialModel, getDeckCmd
@@ -41,17 +41,18 @@ let init () : Model * Cmd<Msg> =
 // It can also run side-effects (encoded as commands) like calling the server via Http.
 // these commands in turn, can dispatch messages to which the update function will react.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
-    match currentModel, msg with
+    match currentModel.Deck, msg with
     | _, Reset ->
         init()
-    | model, RollDice ->
-        let { Lens=_ ; Card=_ ; Deck= deck } = model
+    | Some deck, RollDice ->
         let newLens = rollDice()
         let (newCard, newDeck) = deck |> Deck.tryDrawCard newLens
-        let nextModel = { Lens = Some newLens ; Card = newCard ; Deck = newDeck}
+        let nextModel = { Lens = Some newLens ; Card = newCard ; Deck = Some newDeck}
         nextModel, Cmd.none
+    | None, RollDice ->
+        { Lens = None ; Deck = None ; Card = None }, Cmd.none
     | _, InitialDeckLoaded initialDeck ->
-        let nextModel = { Lens = None ; Deck = initialDeck ; Card = None }
+        let nextModel = { Lens = None ; Deck = Some initialDeck ; Card = None }
         nextModel, Cmd.none
 
 let safeComponents =
@@ -83,19 +84,6 @@ let button txt onClick =
           Button.Color IsPrimary
           Button.OnClick onClick ]
         [ str txt ]
-
-let lensDeck (lens : Lens, count : int) =
-    Level.item [ Level.Item.HasTextCentered ]
-      [ div [ ]
-          [ Level.heading [ ]
-              [ str (Lens.toString lens) ]
-            Level.title [ ]
-              [ str (sprintf "%i" count) ] ] ]
-
-let showDeck deck =
-    let counters = deck |> Deck.countLenses
-    let levels = counters |> List.map lensDeck 
-    Level.level [ ] levels
 
 let cubeImage (lens : Lens option) =
     match lens with
@@ -135,6 +123,28 @@ let tryShowCard (card: Card option) =
                 [ h1 [ ] [str "Roll the dice"] ]
         ] ]
 
+let lensDeck (lens : Lens, count : int) =
+    Level.item [ Level.Item.HasTextCentered ]
+      [ div [ ]
+          [ Level.heading [ ]
+              [ str (Lens.toString lens) ]
+            Level.title [ ]
+              [ str (sprintf "%i" count) ] ] ]
+
+let showDeck deck =
+    let counters = deck |> Deck.countLenses
+    let levels = counters |> List.map lensDeck 
+    Level.level [ ] levels
+
+let showLoading =
+    Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+        [ h2 [] [ str "Loading..." ] ]
+
+let tryShowDeck (deck : Deck option) =
+    match deck with
+    | Some d -> showDeck d
+    | None -> showLoading
+
 let view (model : Model) (dispatch : Msg -> unit) =
     div []
         [ Navbar.navbar [ Navbar.Color IsPrimary ]
@@ -146,7 +156,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
               [
                 tryShowCube model.Lens dispatch
                 tryShowCard model.Card
-                showDeck model.Deck
+                tryShowDeck model.Deck
               ]
 
           Footer.footer [ ]
