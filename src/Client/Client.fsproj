@@ -23,7 +23,6 @@
         <Content Include="public\takeaway-lens.png" />
         <Content Include="public\takeaway.png" />
         <Compile Include="..\Shared\Cube.fs" Link="Cube.fs" />
-        <Compile Include="..\Shared\Shared.fs" />
         <Compile Include="Version.fs" />
         <Compile Include="Client.fs" />
     </ItemGroup>

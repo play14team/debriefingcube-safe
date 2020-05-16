@@ -9,7 +9,6 @@ open Thoth.Fetch
 open Fulma
 open Thoth.Json
 
-open Shared
 open DebriefingCube.Cube
 
 // The model holds data that you want to keep track of while the application is running
