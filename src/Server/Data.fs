@@ -14,7 +14,7 @@ module Data =
             Number = card.Number
             Lens = card.Lens |> Lens.toLens
             Question = card.Question
-            //DeepeningQuestions = card.DeepeningQuestions
+            DeepeningQuestions = card.DeepeningQuestions
         }
 
     let loadDeck () : Deck =

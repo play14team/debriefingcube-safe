@@ -90,8 +90,12 @@ let showLens = function
 | _ -> "Roll the dice"
 
 let showCard = function
-| Some card -> string card.Question
+| Some card -> card.Question
 | _ -> "No card"
+
+let showCardDetails = function
+| Some card -> sprintf "%A" card.DeepeningQuestions
+| _ -> ""
 
 let getDicePicture model =
     match model.Lens with
@@ -99,7 +103,6 @@ let getDicePicture model =
         let s = lens |> sprintf "%A"
         s.ToLower() + "-lens.png"
     | None -> "cube.png"
-        
 
 let button txt onClick =
     Button.button
@@ -125,7 +128,9 @@ let view (model : Model) (dispatch : Msg -> unit) =
                     [ Image.image [ Image.Is128x128 ]
                         [ img [ Src (getDicePicture model) ] ] ]
                 Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ Heading.h3 [] [ str (showCard model.Card) ] ]
+                    [ Heading.h3 [] [ str (showCard model.Card) ]
+                      Heading.h4 [] [ str (showCardDetails model.Card) ]
+                    ]
                 Columns.columns []
                     [ Column.column [] [ button "Roll dice" (fun _ -> dispatch RollDice) ]
                       Column.column [] [ button "Reset" (fun _ -> dispatch Reset) ]
