@@ -176,26 +176,31 @@ module Card =
         ]
 
 module Deck = 
-    let lensImage (lens: Lens) =
-        Box.box' [] [
-            Image.image [ Image.IsSquare ] [ img [ Src (sprintf "%A-back.png" lens) ] ]
-        ]
+    let lensImage (lens: Lens) (count : int) =
+        Image.image [ ]
+            [ img [
+                Src (sprintf "%A-back.png" lens)
+                Class ( sprintf "shadow%i" count) ] ]
 
-    let lensDeck (lenses : Lenses) (lens : Lens, count : int) =
+    let lensContent (lenses : Lenses) (lens : Lens, count : int) =
         let info = lenses |> Lenses.getInfo lens
-        Column.column [ ]
-            [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                [ str info.Name
-                  h2 [] [ str (sprintf "%i" count) ]
-                  p [] [ lensImage lens ]
-                  p [] [ str info.Description ]
-                ]
+        Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+            [ str info.Name
+              h2 [] [ str (sprintf "%i" count) ]
+              lensImage lens count
+              str info.Description
             ]
 
-    let showDeck deck lenses =
+    let lensColumn (lenses : Lenses) (lens : Lens, count : int) =
+        Column.column [ Column.Option.Width (Screen.All, Column.Is3) ] [ lensContent lenses (lens, count) ]
+
+    let lensColumns deck lenses =
         let counters = deck |> Deck.countLenses
-        let columns = counters |> List.map (lensDeck lenses)
-        Columns.columns [ Columns.IsGap (Screen.All, Columns.Is1) ] columns
+        let columns = counters |> List.map (lensColumn lenses)
+        columns |> List.splitInto 2 |> List.map (fun l -> 
+            Columns.columns [ Columns.IsGrid
+                              Columns.IsCentered
+                              Columns.IsGap (Screen.All, Columns.Is8) ] l)
 
     let showLoading =
         Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
@@ -205,10 +210,10 @@ module Deck =
         let elements =
             match model.Deck, model.Lenses with
             | Some deck, Some lenses ->
-                showDeck deck lenses
-            | _, _ -> showLoading
+                lensColumns deck lenses
+            | _, _ -> [ showLoading ]
         [ Heading.p [ ] [ str "Cards" ]
-          p [ ] [ elements ]
+          p [ ] elements
         ]
 
 let view (model : Model) (dispatch : Msg -> unit) =
