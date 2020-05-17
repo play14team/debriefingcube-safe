@@ -15,6 +15,15 @@ module Cube =
     | Emotions
     | TakeAway
 
+    type LensInfo = {
+        Lens : Lens
+        Name : string
+        Description : string
+        DeepeningQuestions : string []
+    }
+
+    type Lenses = LensInfo list
+
     module Lens =
 
         let all =
@@ -41,7 +50,7 @@ module Cube =
 
     let rollDice () : Lens =
         Lens.all
-        |>  Helpers.shuffleR (System.Random())
+        |> Helpers.shuffleR (System.Random())
         |> List.head
 
     type Card = {

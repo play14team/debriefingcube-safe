@@ -21,6 +21,12 @@ let webApp = router {
             let deck = Cards.load()
             return! json deck next ctx
         })
+
+    get "/api/lenses" (fun next ctx ->
+        task {
+            let deck = Cards.load()
+            return! json deck next ctx
+        })
 }
 
 let app = application {
