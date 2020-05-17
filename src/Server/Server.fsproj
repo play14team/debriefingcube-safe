@@ -12,7 +12,9 @@
         <EmbeddedResource Include="Data\cards-en.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
-        <EmbeddedResource Include="Data\lenses-en.json" />
+        <EmbeddedResource Include="Data\lenses-en.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
         <None Include="Data\DebriefingCube.xlsx" />
         <None Include="paket.references" />
         <Compile Include="..\Shared\Cube.fs" Link="Cube.fs" />

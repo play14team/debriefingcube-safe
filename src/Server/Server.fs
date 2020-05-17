@@ -24,7 +24,7 @@ let webApp = router {
 
     get DebriefingCube.Uris.Lenses (fun next ctx ->
         task {
-            let deck = Cards.load()
+            let deck = Lenses.load()
             return! json deck next ctx
         })
 }

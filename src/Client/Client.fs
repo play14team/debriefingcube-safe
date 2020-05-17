@@ -15,34 +15,49 @@ type Model = {
     Lens: Lens option
     Card: Card option
     Deck: Deck option
+    Lenses: Lenses option
     }
 
 type Msg =
-    | RollDice
     | Reset
+    | Roll
     | InitialDeckLoaded of Deck
+    | InitialLensesLoaded of Lenses
 
 let initialDeck () = Fetch.fetchAs<Deck> DebriefingCube.Uris.Deck
+let initialLenses () = Fetch.fetchAs<Lenses> DebriefingCube.Uris.Lenses
 
 let init () : Model * Cmd<Msg> =
-    let initialModel = { Lens = None ; Deck = None ; Card = None }
-    let getDeckCmd =
-        Cmd.OfPromise.perform initialDeck () InitialDeckLoaded
-    initialModel, getDeckCmd
+    let initialModel = { Lens = None ;  Card = None ; Deck = None ; Lenses = None }
+    let getDeckCmd = Cmd.OfPromise.perform initialDeck () InitialDeckLoaded
+    let getLensesCmd = Cmd.OfPromise.perform initialLenses () InitialLensesLoaded
+    initialModel, Cmd.batch [ getDeckCmd ; getLensesCmd ]
 
-let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
-    match currentModel.Deck, msg with
+let rec update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
+    match currentModel, msg with
     | _, Reset ->
         init()
-    | Some deck, RollDice ->
-        let newLens = DebriefingCube.Cube.roll()
-        let (newCard, newDeck) = deck |> Deck.tryDrawCard newLens
-        let nextModel = { Lens = Some newLens ; Card = newCard ; Deck = Some newDeck}
+    | model, Roll ->
+        match model.Deck with
+        | Some deck ->
+            if deck.Length = 0 then
+                init()
+            else
+                let newLens = DebriefingCube.Cube.roll()
+                let count = (deck |> Deck.countLens newLens)
+                if count > 0 then
+                    let (newCard, newDeck) = deck |> Deck.tryDrawCard newLens
+                    let nextModel = { model with Lens = Some newLens ; Card = newCard ; Deck = Some newDeck }
+                    nextModel, Cmd.none
+                else
+                    update msg currentModel
+        | None ->
+            model, Cmd.none
+    | model, InitialDeckLoaded deck ->
+        let nextModel = { model with Deck = Some deck }
         nextModel, Cmd.none
-    | None, RollDice ->
-        { Lens = None ; Deck = None ; Card = None }, Cmd.none
-    | _, InitialDeckLoaded initialDeck ->
-        let nextModel = { Lens = None ; Deck = Some initialDeck ; Card = None }
+    | model, InitialLensesLoaded lenses ->
+        let nextModel = { model with Lenses = Some lenses }
         nextModel, Cmd.none
 
 let safeComponents =
@@ -95,7 +110,7 @@ module Cube =
     let showButtons (dispatch : Msg -> unit) =
         Columns.columns [ Columns.IsGap (Screen.All, Columns.Is8) ]
             [ Column.column [ ]
-                [ button "Roll" (fun _ -> dispatch RollDice) IsPrimary ]
+                [ button "Roll" (fun _ -> dispatch Roll) IsPrimary ]
               Column.column [ ]
                 [ button "Reset" (fun _ -> dispatch Reset) IsDanger ]
             ]
@@ -158,34 +173,37 @@ module Card =
         ]
 
 module Deck = 
-    let showDeckImage (lens: Lens) =
+    let lensImage (lens: Lens) =
         Image.image [ Image.IsSquare ] [ img [ Src (sprintf "%A-back.png" lens) ] ]
 
-    let lensDeck (lens : Lens, count : int) =
+    let lensDeck (lenses : Lenses) (lens : Lens, count : int) =
+        let info = lenses |> List.find (fun l -> l.Lens = lens)
         Column.column [ ]
             [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                [ str (Lens.toString lens)
+                [ str info.Name
                   h2 [] [ str (sprintf "%i" count) ]
-                  p [] [ showDeckImage lens ]
+                  p [] [ lensImage lens ]
+                  p [] [ str info.Description ]
                 ]
             ]
 
-    let showDeck deck =
+    let showDeck deck lenses =
         let counters = deck |> Deck.countLenses
-        let columns = counters |> List.map lensDeck 
+        let columns = counters |> List.map (lensDeck lenses)
         Columns.columns [ Columns.IsGap (Screen.All, Columns.Is1) ] columns
 
     let showLoading =
         Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
             [ h2 [] [ str "Loading..." ] ]
 
-    let tryShowDeck = function
-        | Some d -> showDeck d
-        | None -> showLoading
-
-    let tryShow (deck : Deck option) =
+    let show (model: Model) =
+        let elements =
+            match model.Deck, model.Lenses with
+            | Some deck, Some lenses ->
+                showDeck deck lenses
+            | _, _ -> showLoading
         [ Heading.p [ ] [ str "Cards" ]
-          p [ ] [ tryShowDeck deck ]
+          p [ ] [ elements ]
         ]
 
 let view (model : Model) (dispatch : Msg -> unit) =
@@ -210,7 +228,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
                       Tile.parent [ ]
                         [ Tile.child [ ]
                             [ Box.box' [ Common.Props [ Style [ Height "100%" ] ] ]
-                                (Deck.tryShow model.Deck) 
+                                (Deck.show model) 
                             ]
                         ]
                     ]

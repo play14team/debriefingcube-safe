@@ -42,12 +42,6 @@ module Cube =
         let fromLens (l : Lens) =
             sprintf "%A" l
 
-        let toString (l : Lens) =
-            match l with
-            | GroupDynamics -> "Group Dynamics"
-            | TakeAway -> "Take-Away"
-            | _ -> sprintf "%A" l
-
     type Card = {
         Number : int
         Lens : Lens

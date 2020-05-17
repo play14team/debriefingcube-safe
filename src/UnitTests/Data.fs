@@ -16,9 +16,17 @@ let ``Load data from Json`` () =
 
 [<Fact>]
 let ``Load cards from Json`` () =
-    let deck = DebriefingCube.Data.loadDeck ()
+    let deck = DebriefingCube.Data.Cards.load ()
     test <@ deck.Length = 42 @>
 
     let firstCard = deck |> List.head
     test <@ firstCard.Number = 1 @>
     test <@ firstCard.Lens = Goal @>
+
+[<Fact>]
+let ``Load lenses from Json`` () =
+    let lenses = DebriefingCube.Data.Lenses.load ()
+    test <@ lenses.Length = 6 @>
+
+    let firstLens = lenses |> List.head
+    test <@ firstLens.Lens = Goal @>
