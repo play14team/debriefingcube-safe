@@ -4,9 +4,9 @@
         {
             "number": 1,
             "lens": "Goal",
-            "question": "What was your Goal? Phrase it in one sentence.",
+            "question": "What was your goal? Phrase it in one sentence.",
             "deepeningQuestions": [
-                "Did anyone have a different Goal?",
+                "Did anyone have a different goal?",
                 "Why was there a difference?",
                 "Did this make a difference?"
             ]
@@ -24,7 +24,7 @@
         {
             "number": 3,
             "lens": "Goal",
-            "question": "How did you align on the Goal?",
+            "question": "How did you align on the goal?",
             "deepeningQuestions": [
                 "What made the alignment easy/hard?",
                 "Did everyone agree?",
@@ -34,7 +34,7 @@
         {
             "number": 4,
             "lens": "Goal",
-            "question": "Was there a shared understanding of the Goal?",
+            "question": "Was there a shared understanding of the goal?",
             "deepeningQuestions": [
                 "How did you reach the shared understanding?",
                 "Would a shared understanding have helped?",
@@ -44,7 +44,7 @@
         {
             "number": 5,
             "lens": "Goal",
-            "question": "How is your understanding of the Goal different now?",
+            "question": "How is your understanding of the goal different now?",
             "deepeningQuestions": [
                 "How did your awareness change?",
                 "What did you learn?",
@@ -104,7 +104,7 @@
         {
             "number": 11,
             "lens": "Process",
-            "question": "How could you have made the Process more/less pleasant?",
+            "question": "How could you have made the process more/less pleasant?",
             "deepeningQuestions": [
                 "What would you have done differently?",
                 "How would this have changed the experience?",
@@ -164,7 +164,7 @@
         {
             "number": 17,
             "lens": "GroupDynamics",
-            "question": "What changes in GroupDynamics did you experience?",
+            "question": "What changes in group dynamics did you experience?",
             "deepeningQuestions": [
                 "What caused this change?",
                 "How did this impact your experience?",
@@ -224,7 +224,7 @@
         {
             "number": 23,
             "lens": "Communication",
-            "question": "What non-verbal Communication was there?",
+            "question": "What non-verbal communication was there?",
             "deepeningQuestions": [
                 "What was the impact on you and the group?",
                 "Could others have interpreted this differently?",
@@ -238,13 +238,13 @@
             "deepeningQuestions": [
                 "What was great about it?",
                 "How would you teach this to others?",
-                "List your top five Communication take-aways!"
+                "List your top five communication take-aways!"
             ]
         },
         {
             "number": 25,
             "lens": "Communication",
-            "question": "What misCommunications were there?",
+            "question": "What miscommunications were there?",
             "deepeningQuestions": [
                 "What were the causes?",
                 "How did this impact the experience?",

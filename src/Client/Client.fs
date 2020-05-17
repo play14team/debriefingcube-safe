@@ -11,18 +11,12 @@ open Thoth.Json
 
 open DebriefingCube.Cube
 
-// The model holds data that you want to keep track of while the application is running
-// in this case, we are keeping track of a counter
-// we mark it as optional, because initially it will not be available from the client
-// the initial value will be requested from server
 type Model = {
     Lens: Lens option
     Card: Card option
     Deck: Deck option
     }
 
-// The Msg type defines what events/actions can occur while the application is running
-// the state of the application changes *only* in reaction to these events
 type Msg =
     | RollDice
     | Reset
@@ -30,16 +24,12 @@ type Msg =
 
 let initialDeck () = Fetch.fetchAs<Deck> "/api/deck"
 
-// defines the initial state and initial command (= side-effect) of the application
 let init () : Model * Cmd<Msg> =
     let initialModel = { Lens = None ; Deck = None ; Card = None }
     let getDeckCmd =
         Cmd.OfPromise.perform initialDeck () InitialDeckLoaded
     initialModel, getDeckCmd
 
-// The update function computes the next state of the application based on the current state and the incoming events/messages
-// It can also run side-effects (encoded as commands) like calling the server via Http.
-// these commands in turn, can dispatch messages to which the update function will react.
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     match currentModel.Deck, msg with
     | _, Reset ->
@@ -78,81 +68,125 @@ let safeComponents =
           str " powered by: "
           components ]
 
-let button txt onClick color =
-    Button.button
-        [ Button.IsFullWidth
-          Button.Color color
-          Button.OnClick onClick ]
-        [ str txt ]
+module Cube =
+    let button txt onClick color =
+        Button.button
+            [ Button.IsFullWidth
+              Button.Color color
+              Button.OnClick onClick ]
+            [ str txt ]
 
-let cubeImage = function
-    | Some l -> (l |> sprintf "%A-lens.png").ToLower()
-    | None -> "cube.png"
+    let cubeImage = function
+        | Some l -> (l |> sprintf "%A-lens.png").ToLower()
+        | None -> "cube.png"
 
-let showLens = function
-| Some lens -> Lens.toString lens
-| _ -> "Roll the dice"
+    let showCube (lens : Lens option) =
+        Image.image
+            [ Image.CustomClass "is-192x192 is-inline-block" ]
+            [ img [ Src (cubeImage lens) ] ]
 
-let showCube (lens : Lens option) (dispatch : Msg -> unit) =
-    Columns.columns [ Columns.IsGap (Screen.All, Columns.Is1) ]
-     [ Column.column [ ]
-         [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-             [ Image.image
-                [ Image.CustomClass "is-256x256 is-inline-block" ]
-                    [ img [ Src (cubeImage lens) ] ]
-               Heading.h4 [] [ str (showLens lens) ]
-               Columns.columns [ Columns.IsGap (Screen.All, Columns.Is8) ]
+    let showLens (lens : Lens option) =
+        Heading.h4 []
+            [ str ( match lens with
+                        | Some l -> Lens.toString l
+                        | None -> "Roll the cube" )
+            ]
+
+    let showButtons (dispatch : Msg -> unit) =
+        Columns.columns [ Columns.IsGap (Screen.All, Columns.Is8) ]
+            [ Column.column [ ]
+                [ button "Roll" (fun _ -> dispatch RollDice) IsPrimary ]
+              Column.column [ ]
+                [ button "Reset" (fun _ -> dispatch Reset) IsDanger ]
+            ]
+    let show (lens : Lens option) (dispatch : Msg -> unit) =
+        [ Heading.p [ ] [ str "Cube" ]
+          p [ ]
+            [ Columns.columns
+                [ Columns.IsGap (Screen.All, Columns.Is1) ]
                 [ Column.column [ ]
-                    [ button "Roll" (fun _ -> dispatch RollDice) IsPrimary ]
-                  Column.column [ ]
-                    [ button "Reset" (fun _ -> dispatch Reset) IsDanger ]
+                    [ Content.content
+                        [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+                        [ showCube lens
+                          showLens lens
+                          showButtons dispatch
+                        ]
+                    ]
+
                 ]
-             ]
-         ]
-     ]
-
-let deepeningQuestion q =
-    h4 [] [ Icon.icon [ ]
-                [ i [ ClassName "fas fa-angle-right" ] [ ] ]
-            str q ]
-
-let showCard (card : Card) =
-    let question = h3 [] [ str card.Question ]
-    let deepeningQuestions = card.DeepeningQuestions |> Array.map deepeningQuestion |> Array.toList
-    let all = question :: deepeningQuestions
-    Content.content [ ] all
-
-let noCard =
-    Content.content [ ] [ h3 [ ] [str "No card"] ]
-
-let tryShowCard = function
-    | Some c -> showCard c
-    | None -> noCard
-
-let showDeckImage (lens: Lens) =
-    Image.image [ Image.IsSquare ] [ img [ Src (sprintf "%A-back.png" lens) ] ]
-
-let lensDeck (lens : Lens, count : int) =
-    Column.column [ ]
-        [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-            [ str (Lens.toString lens)
-              h2 [] [ str (sprintf "%i" count) ]
-              p [] [ showDeckImage lens ]
             ]
         ]
+        
+module Card =
+    let question q =
+        h3 [] [ str q ]
 
-let showDeck deck =
-    let counters = deck |> Deck.countLenses
-    let columns = counters |> List.map lensDeck 
-    Columns.columns [ Columns.IsGap (Screen.All, Columns.Is1) ] columns
+    let deepeningQuestion q =
+        h4 []
+           [ Icon.icon [ ] [ i [ ClassName "fas fa-angle-right" ] [ ] ]
+             str q
+           ]
 
-let showLoading =
-    Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-        [ h2 [] [ str "Loading..." ] ]
+    let showQuestions (card : Card) =
+        let question = question card.Question
+        let deepeningQuestions = card.DeepeningQuestions |> Array.map deepeningQuestion |> Array.toList
+        let elements = question :: deepeningQuestions
+        Content.content [ ] elements
 
-let tryShowDeck = function
-    | Some d -> showDeck d
-    | None -> showLoading
+    let noCard =
+        Content.content [ ] [ h4 [ ] [str "No card"] ]
+
+    let tryShowQuestions = function
+        | Some c -> showQuestions c
+        | None -> noCard
+
+    let showNumber (card : Card) = 
+        Content.content [ ] [ h5 [] [ str (sprintf "#%i" card.Number) ] ]
+
+    let tryShowNumber = function
+        | Some c -> showNumber c
+        | None -> span [] []
+
+    let tryShow (card : Card option) =
+        [ Level.level [ ]
+            [ Level.left [ ]
+                [ Level.item [ ] [ Heading.p [ ] [ str "Questions" ] ] ]
+              Level.right [ ]
+                [ Level.item [ ] [ tryShowNumber card ] ]
+            ]
+          p [ ] [ tryShowQuestions card ]
+        ]
+
+module Deck = 
+    let showDeckImage (lens: Lens) =
+        Image.image [ Image.IsSquare ] [ img [ Src (sprintf "%A-back.png" lens) ] ]
+
+    let lensDeck (lens : Lens, count : int) =
+        Column.column [ ]
+            [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+                [ str (Lens.toString lens)
+                  h2 [] [ str (sprintf "%i" count) ]
+                  p [] [ showDeckImage lens ]
+                ]
+            ]
+
+    let showDeck deck =
+        let counters = deck |> Deck.countLenses
+        let columns = counters |> List.map lensDeck 
+        Columns.columns [ Columns.IsGap (Screen.All, Columns.Is1) ] columns
+
+    let showLoading =
+        Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+            [ h2 [] [ str "Loading..." ] ]
+
+    let tryShowDeck = function
+        | Some d -> showDeck d
+        | None -> showLoading
+
+    let tryShow (deck : Deck option) =
+        [ Heading.p [ ] [ str "Cards" ]
+          p [ ] [ tryShowDeck deck ]
+        ]
 
 let view (model : Model) (dispatch : Msg -> unit) =
     div []
@@ -168,24 +202,18 @@ let view (model : Model) (dispatch : Msg -> unit) =
                                     Tile.Size Tile.Is4 ]
                         [ Tile.child [ ]
                             [ Box.box' [ ]
-                                [ Heading.p [ ]
-                                    [ str "Cube" ]
-                                  p [ ]
-                                    [ showCube model.Lens dispatch ] ] ]
+                                (Cube.show model.Lens dispatch) ]
                           Tile.child [ ]
                             [ Box.box' [ ]
-                                [ Heading.p [ ]
-                                    [ str "Card" ]
-                                  p [ ]
-                                    [ tryShowCard model.Card ] ] ]
+                                (Card.tryShow model.Card) ]
                         ]
                       Tile.parent [ ]
                         [ Tile.child [ ]
                             [ Box.box' [ Common.Props [ Style [ Height "100%" ] ] ]
-                                [ Heading.p [ ]
-                                    [ str "Deck" ]
-                                  p [ ]
-                                    [ tryShowDeck model.Deck ] ] ] ] ]
+                                (Deck.tryShow model.Deck) 
+                            ]
+                        ]
+                    ]
               ]
 
           Footer.footer [ ]
