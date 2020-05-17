@@ -35,7 +35,7 @@ let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     | _, Reset ->
         init()
     | Some deck, RollDice ->
-        let newLens = rollDice()
+        let newLens = DebriefingCube.Cube.roll()
         let (newCard, newDeck) = deck |> Deck.tryDrawCard newLens
         let nextModel = { Lens = Some newLens ; Card = newCard ; Deck = Some newDeck}
         nextModel, Cmd.none

@@ -48,11 +48,6 @@ module Cube =
             | TakeAway -> "Take-Away"
             | _ -> sprintf "%A" l
 
-    let rollDice () : Lens =
-        Lens.all
-        |> Helpers.shuffleR (System.Random())
-        |> List.head
-
     type Card = {
         Number : int
         Lens : Lens
@@ -84,6 +79,12 @@ module Cube =
                 (card, remainingDeck)
             | None ->
                 (None, deck)
+
+    let roll () : Lens =
+        Lens.all
+        |> Helpers.shuffleR (System.Random())
+        |> List.head
+
 
 module Uris =
 
