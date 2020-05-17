@@ -22,7 +22,7 @@ type Msg =
     | Reset
     | InitialDeckLoaded of Deck
 
-let initialDeck () = Fetch.fetchAs<Deck> "/api/deck"
+let initialDeck () = Fetch.fetchAs<Deck> DebriefingCube.Uris.Deck
 
 let init () : Model * Cmd<Msg> =
     let initialModel = { Lens = None ; Deck = None ; Card = None }

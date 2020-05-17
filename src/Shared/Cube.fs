@@ -85,6 +85,14 @@ module Cube =
             | None ->
                 (None, deck)
 
+module Uris =
+
+    [<Literal>]
+    let Deck = "/api/deck/"
+
+    [<Literal>]
+    let Lenses = "/api/lenses/"
+
 module FakeData =
 
     open Cube

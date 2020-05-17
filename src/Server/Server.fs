@@ -16,13 +16,13 @@ let port =
 
 let webApp = router {
 
-    get "/api/deck" (fun next ctx ->
+    get DebriefingCube.Uris.Deck (fun next ctx ->
         task {
             let deck = Cards.load()
             return! json deck next ctx
         })
 
-    get "/api/lenses" (fun next ctx ->
+    get DebriefingCube.Uris.Lenses (fun next ctx ->
         task {
             let deck = Cards.load()
             return! json deck next ctx
