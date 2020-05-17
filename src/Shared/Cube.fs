@@ -24,6 +24,10 @@ module Cube =
 
     type Lenses = LensInfo list
 
+    module Lenses =
+        let getInfo lens lenses =
+            lenses |> List.find (fun l -> l.Lens = lens)
+
     module Lens =
 
         let all =

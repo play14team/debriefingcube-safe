@@ -95,17 +95,20 @@ module Cube =
         | Some l -> (l |> sprintf "%A-lens.png").ToLower()
         | None -> "cube.png"
 
-    let showCube (lens : Lens option) =
+    let showCube (model : Model) =
         Image.image
             [ Image.CustomClass "is-192x192 is-inline-block" ]
-            [ img [ Src (cubeImage lens) ] ]
+            [ img [ Src (cubeImage model.Lens) ] ]
 
-    let showLens (lens : Lens option) =
-        Heading.h4 []
-            [ str ( match lens with
-                        | Some l -> Lens.toString l
-                        | None -> "Roll the cube" )
-            ]
+    let showLens (model : Model) =
+        let lens = 
+            match model.Lens, model.Lenses with
+            | Some lens, Some lenses ->
+                let info = lenses |> Lenses.getInfo lens
+                info.Name
+            | _, _ ->
+                "Roll the cube"
+        Heading.h4 [] [ str lens ]
 
     let showButtons (dispatch : Msg -> unit) =
         Columns.columns [ Columns.IsGap (Screen.All, Columns.Is8) ]
@@ -114,7 +117,7 @@ module Cube =
               Column.column [ ]
                 [ button "Reset" (fun _ -> dispatch Reset) IsDanger ]
             ]
-    let show (lens : Lens option) (dispatch : Msg -> unit) =
+    let show (model : Model) (dispatch : Msg -> unit) =
         [ Heading.p [ ] [ str "Cube" ]
           p [ ]
             [ Columns.columns
@@ -122,8 +125,8 @@ module Cube =
                 [ Column.column [ ]
                     [ Content.content
                         [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                        [ showCube lens
-                          showLens lens
+                        [ showCube model
+                          showLens model
                           showButtons dispatch
                         ]
                     ]
@@ -162,22 +165,24 @@ module Card =
         | Some c -> showNumber c
         | None -> span [] []
 
-    let tryShow (card : Card option) =
+    let show (model : Model) =
         [ Level.level [ ]
             [ Level.left [ ]
                 [ Level.item [ ] [ Heading.p [ ] [ str "Questions" ] ] ]
               Level.right [ ]
-                [ Level.item [ ] [ tryShowNumber card ] ]
+                [ Level.item [ ] [ tryShowNumber model.Card ] ]
             ]
-          p [ ] [ tryShowQuestions card ]
+          p [ ] [ tryShowQuestions model.Card ]
         ]
 
 module Deck = 
     let lensImage (lens: Lens) =
-        Image.image [ Image.IsSquare ] [ img [ Src (sprintf "%A-back.png" lens) ] ]
+        Box.box' [] [
+            Image.image [ Image.IsSquare ] [ img [ Src (sprintf "%A-back.png" lens) ] ]
+        ]
 
     let lensDeck (lenses : Lenses) (lens : Lens, count : int) =
-        let info = lenses |> List.find (fun l -> l.Lens = lens)
+        let info = lenses |> Lenses.getInfo lens
         Column.column [ ]
             [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
                 [ str info.Name
@@ -220,10 +225,10 @@ let view (model : Model) (dispatch : Msg -> unit) =
                                     Tile.Size Tile.Is4 ]
                         [ Tile.child [ ]
                             [ Box.box' [ ]
-                                (Cube.show model.Lens dispatch) ]
+                                (Cube.show model dispatch) ]
                           Tile.child [ ]
                             [ Box.box' [ ]
-                                (Card.tryShow model.Card) ]
+                                (Card.show model) ]
                         ]
                       Tile.parent [ ]
                         [ Tile.child [ ]
