@@ -1,0 +1,60 @@
+{
+    "lenses": [
+        {
+            "lens": "Goal",
+            "name": "Goal",
+            "description": "Explore shared understandings",
+            "deepeningQuestions": [
+                "What was the goal?",
+                "How did you align on the goal?",
+                "Was there a shared understanding?"
+            ]
+        },
+        {
+            "lens": "Process",
+            "name": "Process",
+            "description": "Explore the journey and the result",
+            "deepeningQuestions": [
+                "What were the steps that lead to the result?",
+                "What decisions did you make?"
+            ]
+        },
+        {
+            "lens": "GroupDynamics",
+            "name": "Group Dynamics",
+            "description": "Explore behaviors",
+            "deepeningQuestions": [
+                "How did you organize yourselves?",
+                "What interesting behaviour did you observe?"
+            ]
+        },
+        {
+            "lens": "Communication",
+            "name": "Communication",
+            "description": "Explore thinking, speaking and hearing",
+            "deepeningQuestions": [
+                "Did you communicate enough?",
+                "What is left unspoken?"
+            ]
+        },
+        {
+            "lens": "Emotions",
+            "name": "Emotions",
+            "description": "Explore actions and emotions",
+            "deepeningQuestions": [
+                "How did you feel?",
+                "When did you care most/least about the outcome?"
+            ]
+        },
+        {
+            "lens": "TakeAway",
+            "name": "Take-Away",
+            "description": "Explore the opportunities to improve",
+            "deepeningQuestions": [
+                "What did you learn about yourselves?",
+                "What are you more aware of now?"
+            ]
+        }
+    ]
+}
+

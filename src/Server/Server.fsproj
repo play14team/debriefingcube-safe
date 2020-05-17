@@ -5,12 +5,14 @@
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-      <Content Remove="Data\debriefingcube-en.json" />
+      <Content Remove="Data\cards-en.json" />
+      <Content Remove="Data\lenses-en.json" />
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Include="Data\debriefingcube-en.json">
+        <EmbeddedResource Include="Data\cards-en.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </EmbeddedResource>
+        <EmbeddedResource Include="Data\lenses-en.json" />
         <None Include="Data\DebriefingCube.xlsx" />
         <None Include="paket.references" />
         <Compile Include="..\Shared\Cube.fs" Link="Cube.fs" />
@@ -19,7 +21,6 @@
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="FSharp.Data" Version="3.3.3" />
-      <PackageReference Include="FSharp.Data.TypeProviders" Version="5.0.0.6" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
