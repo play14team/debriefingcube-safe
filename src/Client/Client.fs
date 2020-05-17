@@ -60,28 +60,51 @@ let rec update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
         let nextModel = { model with Lenses = Some lenses }
         nextModel, Cmd.none
 
-let safeComponents =
-    let components =
-        span [ ]
-           [ a [ Href "https://github.com/SAFE-Stack/SAFE-template" ]
-               [ str "SAFE  "
-                 str Version.template ]
-             str ", "
-             a [ Href "https://saturnframework.github.io" ] [ str "Saturn" ]
-             str ", "
-             a [ Href "http://fable.io" ] [ str "Fable" ]
-             str ", "
-             a [ Href "https://elmish.github.io" ] [ str "Elmish" ]
-             str ", "
-             a [ Href "https://fulma.github.io/Fulma" ] [ str "Fulma" ]
-
-           ]
-
-    span [ ]
-        [ str "Version "
-          strong [ ] [ str Version.app ]
-          str " powered by: "
-          components ]
+let footerComponents =
+    [
+        strong [ ] [
+            a [ Href "https://thedebriefingcube.com"
+                Target "_blank" ]
+                [ str "#TheDebriefingCube" ]
+            ]
+        str " version "
+        strong [ ] [ str Version.app ]
+        str " created by "
+        strong [ ] [
+            a [ Href "https://play14.org/players/chris-caswell"
+                Target "_blank" ]
+                [ str "Chris Caswell" ]
+            str " & "
+            a [ Href "https://play14.org/players/julian-kea"
+                Target "_blank" ]
+                [ str "Julian Kea" ]
+            ]
+        str ". This app was developed by "
+        strong [ ] [ 
+            a [ Href "https://play14.org/players/cedric-pontet"
+                Target "_blank" ]
+                [ str "Cédric Pontet" ]
+            ]
+        str " using "
+        a [ Href "https://github.com/SAFE-Stack/SAFE-template"
+            Target "_blank" ]
+            [ str "SAFE  "
+              str Version.template ]
+        br []
+        str "This work is licensed under a "
+        a [ Href "https://creativecommons.org/licenses/by/4.0/"
+            Target "_blank" ]
+            [ str "Creative Commons Attribution 4.0 International License (CC BY 4.0)." ]
+        br []
+        str "The debriefing cube was first discussed at "
+        a [ Href "https://play14.org/events/timisoara/2017-07"
+            Target "_blank" ]
+                [ str "#play14 Timișoara 2017" ]
+        str " and first presented at "
+        a [ Href "https://play14.org/events/luxembourg/2018-03"
+            Target "_blank" ]
+            [ str "#play14 Luxembourg 2018." ]
+    ]
 
 module Cube =
     let button txt onClick color =
@@ -220,7 +243,8 @@ let view (model : Model) (dispatch : Msg -> unit) =
     div []
         [ Navbar.navbar [ Navbar.Color IsPrimary ]
             [ Navbar.Item.div [ ]
-                [ Heading.h2 [ ]
+                [ Icon.icon [ Icon.Size IsLarge ] [ i [ ClassName "fas fa-2x fa-cube" ] [ ] ]
+                  Heading.h2 [ ]
                     [ str "The Debriefing Cube" ] ] ]
 
           Container.container [ Container.IsFluid ]
@@ -246,7 +270,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
 
           Footer.footer [ ]
                 [ Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
-                    [ safeComponents ] ] ]
+                    footerComponents ] ]
 
 #if DEBUG
 open Elmish.Debug
