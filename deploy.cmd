@@ -1,0 +1,1 @@
+dotnet fake build --target appservice -e subscriptionId=5f227b98-8ab5-4e1d-9d04-2d8fcc9c2dee -e clientId=c508bf73-282a-4127-95c7-9e8f0d6a9fad -e tenantId=652bb7a4-4bd7-411e-9f9e-c054eb5ca929 -e location=westeurope -e pricingTier=F1

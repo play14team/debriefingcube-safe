@@ -5,7 +5,10 @@ group Server
 
     nuget FSharp.Core
     nuget Saturn
+    nuget Microsoft.AspNetCore.Authentication.JwtBearer 3.0.2 // pin for netcoreapp30
     nuget Thoth.Json.Giraffe
+    nuget Microsoft.ApplicationInsights.AspNetCore
+    nuget WindowsAzure.Storage
 
 group Client
     source https://api.nuget.org/v3/index.json
@@ -17,7 +20,7 @@ group Client
     nuget Fable.Elmish.Debugger ~> 3
     nuget Fable.Elmish.HMR ~> 4
     nuget Fable.Elmish.React ~> 3
-    nuget Thoth.Fetch ~> 1
+    nuget Thoth.Fetch ~> 2
     nuget Fable.React ~> 5
     nuget Fulma ~> 2
     nuget Fable.FontAwesome.Free ~> 2
@@ -32,4 +35,8 @@ group Build
     nuget Fake.Core.Target
     nuget Fake.DotNet.Cli
     nuget Fake.IO.FileSystem
+    nuget Fake.Core.Environment
+    nuget Fake.Core.Trace
+    nuget Fake.IO.Zip
+    github CompositionalIT/fshelpers src/FsHelpers/ArmHelper/ArmHelper.fs
 

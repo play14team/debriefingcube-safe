@@ -11,6 +11,10 @@ open System
 open Fake.Core
 open Fake.DotNet
 open Fake.IO
+#load @"paket-files/build/CompositionalIT/fshelpers/src/FsHelpers/ArmHelper/ArmHelper.fs"
+open Cit.Helpers.Arm
+open Cit.Helpers.Arm.Parameters
+open Microsoft.Azure.Management.ResourceManager.Fluent.Core
 
 Target.initEnvironment ()
 
@@ -110,6 +114,84 @@ Target.create "Run" (fun _ ->
 
 
 
+Target.create "Bundle" (fun _ ->
+    let serverDir = deployDir
+    let publicDir = Path.combine deployDir "public"
+
+    let publishArgs = sprintf "publish -c Release -o \"%s\"" serverDir
+    runDotNet publishArgs serverPath
+
+    Shell.copyDir publicDir clientDeployPath FileFilter.allFiles
+)
+
+type ArmOutput =
+    { WebAppName : ParameterValue<string>
+      WebAppPassword : ParameterValue<string> }
+let mutable deploymentOutputs : ArmOutput option = None
+
+Target.create "ArmTemplate" (fun _ ->
+    let environment = Environment.environVarOrDefault "environment" (Guid.NewGuid().ToString().ToLower().Split '-' |> Array.head)
+    let armTemplate = @"arm-template.json"
+    let resourceGroupName = environment
+
+    let authCtx =
+        // You can safely replace these with your own subscription and client IDs hard-coded into this script.
+        let subscriptionId = try Environment.environVar "subscriptionId" |> Guid.Parse with _ -> failwith "Invalid Subscription ID. This should be your Azure Subscription ID."
+        let clientId = try Environment.environVar "clientId" |> Guid.Parse with _ -> failwith "Invalid Client ID. This should be the Client ID of an application registered in Azure with permission to create resources in your subscription."
+        let tenantId =
+            try Environment.environVarOrNone "tenantId" |> Option.map Guid.Parse
+            with _ -> failwith "Invalid TenantId ID. This should be the Tenant ID of an application registered in Azure with permission to create resources in your subscription."
+
+        Trace.tracefn "Deploying template '%s' to resource group '%s' in subscription '%O'..." armTemplate resourceGroupName subscriptionId
+        subscriptionId
+        |> authenticateDevice Trace.trace { ClientId = clientId; TenantId = tenantId }
+        |> Async.RunSynchronously
+
+    let deployment =
+        let location = Environment.environVarOrDefault "location" Region.EuropeWest.Name
+        let pricingTier = Environment.environVarOrDefault "pricingTier" "F1"
+        { DeploymentName = "SAFE-template-deploy"
+          ResourceGroup = New(resourceGroupName, Region.Create location)
+          ArmTemplate = IO.File.ReadAllText armTemplate
+          Parameters =
+              Simple
+                  [ "environment", ArmString environment
+                    "location", ArmString location
+                    "pricingTier", ArmString pricingTier ]
+          DeploymentMode = Incremental }
+
+    deployment
+    |> deployWithProgress authCtx
+    |> Seq.iter(function
+        | DeploymentInProgress (state, operations) -> Trace.tracefn "State is %s, completed %d operations." state operations
+        | DeploymentError (statusCode, message) -> Trace.traceError <| sprintf "DEPLOYMENT ERROR: %s - '%s'" statusCode message
+        | DeploymentCompleted d -> deploymentOutputs <- d)
+)
+
+open Fake.IO.Globbing.Operators
+open System.Net
+
+// https://github.com/SAFE-Stack/SAFE-template/issues/120
+// https://stackoverflow.com/a/6994391/3232646
+type TimeoutWebClient() =
+    inherit WebClient()
+    override this.GetWebRequest uri =
+        let request = base.GetWebRequest uri
+        request.Timeout <- 30 * 60 * 1000
+        request
+
+Target.create "AppService" (fun _ ->
+    let zipFile = "deploy.zip"
+    IO.File.Delete zipFile
+    Zip.zip deployDir zipFile !!(deployDir + @"\**\**")
+
+    let appName = deploymentOutputs.Value.WebAppName.value
+    let appPassword = deploymentOutputs.Value.WebAppPassword.value
+
+    let destinationUri = sprintf "https://%s.scm.azurewebsites.net/api/zipdeploy" appName
+    let client = new TimeoutWebClient(Credentials = NetworkCredential("$" + appName, appPassword))
+    Trace.tracefn "Uploading %s to %s" zipFile destinationUri
+    client.UploadData(destinationUri, IO.File.ReadAllBytes zipFile) |> ignore)
 
 
 
@@ -118,6 +200,9 @@ open Fake.Core.TargetOperators
 "Clean"
     ==> "InstallClient"
     ==> "Build"
+    ==> "Bundle"
+    ==> "ArmTemplate"
+    ==> "AppService"
 
 
 "Clean"

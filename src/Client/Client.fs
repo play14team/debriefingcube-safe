@@ -24,8 +24,8 @@ type Msg =
     | InitialDeckLoaded of Deck
     | InitialLensesLoaded of Lenses
 
-let initialDeck () = Fetch.fetchAs<Deck> DebriefingCube.Uris.Deck
-let initialLenses () = Fetch.fetchAs<Lenses> DebriefingCube.Uris.Lenses
+let initialDeck () = Fetch.fetchAs<unit, Deck> DebriefingCube.Uris.Deck
+let initialLenses () = Fetch.fetchAs<unit, Lenses> DebriefingCube.Uris.Lenses
 
 let init () : Model * Cmd<Msg> =
     let initialModel = { Lens = None ;  Card = None ; Deck = None ; Lenses = None }
@@ -68,7 +68,7 @@ let footerComponents =
                 [ str "#TheDebriefingCube" ]
             ]
         str " version "
-        strong [ ] [ str Version.app ]
+        strong [ ] [ str Version.cube ]
         str " created by "
         strong [ ] [
             a [ Href "https://play14.org/players/chris-caswell"
@@ -219,11 +219,17 @@ module Deck =
 
     let lensColumns deck lenses =
         let counters = deck |> Deck.countLenses
-        let columns = counters |> List.map (lensColumn lenses)
-        columns |> List.splitInto 2 |> List.map (fun l -> 
-            Columns.columns [ Columns.IsGrid
-                              Columns.IsCentered
-                              Columns.IsGap (Screen.All, Columns.Is8) ] l)
+        let columnList = counters |> List.map (lensColumn lenses)
+        let columns = columnList
+                        |> List.splitInto 2
+                        |> List.map (fun l -> 
+                                        Columns.columns [ Columns.IsGrid
+                                                          Columns.IsCentered
+                                                          Columns.IsGap (Screen.All, Columns.Is8) ] l)
+        let elements = columns.Head :: hr [] :: columns.Tail
+        [ Text.div [ Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
+            elements
+        ]
 
     let showLoading =
         Content.content [ Content.Modifiers [ Modifier.TextAlignment (Screen.All, TextAlignment.Centered) ] ]
