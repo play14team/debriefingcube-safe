@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+    - name: Restore Tools
+      run: dotnet tool restore
     - name: Build
       run: dotnet fake build -t build
     - name: Test
