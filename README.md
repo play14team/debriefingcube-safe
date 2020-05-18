@@ -1,6 +1,10 @@
-# SAFE Template
+# The Debriefing Cube
 
-This template can be used to generate a full-stack web application using the [SAFE Stack](https://safe-stack.github.io/). It was created using the dotnet [SAFE Template](https://safe-stack.github.io/docs/template-overview/). If you want to learn more about the template why not start with the [quick start](https://safe-stack.github.io/docs/quickstart/) guide?
+This app is the online verion of [The Debriefing Cube](http://thedebriefingcube.com/)
+
+![Build](https://github.com/play14team/debriefingcube-safe/workflows/Build/badge.svg)
+
+The application was developped using the [SAFE Stack](https://safe-stack.github.io/). It was created using the dotnet [SAFE Template](https://safe-stack.github.io/docs/template-overview/). If you want to learn more about the template why not start with the [quick start](https://safe-stack.github.io/docs/quickstart/) guide?
 
 ## Install pre-requisites
 
