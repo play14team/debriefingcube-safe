@@ -83,7 +83,6 @@ module Cube =
         |> Helpers.shuffleR (System.Random())
         |> List.head
 
-
 module Uris =
 
     [<Literal>]
@@ -91,16 +90,3 @@ module Uris =
 
     [<Literal>]
     let Lenses = "/api/lenses/"
-
-module FakeData =
-
-    open Cube
-
-    let goal : Card = { Number = 1; Lens = Goal; Question = "Goal 1" ; DeepeningQuestions = [||]}
-    let proc : Card = { Number = 2; Lens = Process; Question = "Process 1" ; DeepeningQuestions = [||]}
-    let groupDynamics : Card = { Number = 4; Lens = GroupDynamics; Question = "GroupDynamics 1" ; DeepeningQuestions = [||]}
-    let communication : Card = { Number = 5; Lens = Communication; Question = "Communication 1" ; DeepeningQuestions = [||]}
-    let emotions : Card = { Number = 6; Lens = Emotions; Question = "Emotions 1" ; DeepeningQuestions = [||]}
-    let takeAway : Card = { Number = 3; Lens = TakeAway; Question = "TakeAway 1" ; DeepeningQuestions = [||]}
-    
-    let deck : Deck = [ goal ; proc ; groupDynamics ; communication ; emotions ; takeAway ]
