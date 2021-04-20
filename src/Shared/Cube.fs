@@ -15,15 +15,6 @@ module Cube =
     | Emotions
     | TakeAway
 
-    type LensInfo = {
-        Lens : Lens
-        Name : string
-        Description : string
-        DeepeningQuestions : string []
-    }
-
-    type Lenses = LensInfo list
-
     module Lens =
 
         let all =
@@ -42,10 +33,6 @@ module Cube =
         let fromLens (l : Lens) =
             sprintf "%A" l
 
-    module Lenses =
-        let getInfo lens lenses =
-            lenses |> List.find (fun l -> l.Lens = lens)
-
     type Card = {
         Number : int
         Lens : Lens
@@ -54,12 +41,14 @@ module Cube =
     }
 
     module Card = 
-        let isLens (lens : Lens) (card : Card) = card.Lens = lens
+        let isLens (lens : Lens) (card : Card) =
+            card.Lens = lens
 
     type Deck = Card list
 
     module Deck =
-        let ofLens (lens : Lens) (deck : Deck) : Deck = deck |> List.filter (Card.isLens lens)
+        let ofLens (lens : Lens) (deck : Deck) : Deck =
+            deck |> List.filter (Card.isLens lens)
 
         let countLens (lens : Lens) (deck : Deck) : int =
             let lensCards = deck |> ofLens lens
@@ -77,6 +66,19 @@ module Cube =
                 (card, remainingDeck)
             | None ->
                 (None, deck)
+
+    type LensInfo = {
+        Lens : Lens
+        Name : string
+        Description : string
+        DeepeningQuestions : string []
+    }
+
+    type Lenses = LensInfo list
+
+    module Lenses =
+        let getInfo lens lenses =
+            lenses |> List.find (fun l -> l.Lens = lens)
 
     let roll () : Lens =
         Lens.all
